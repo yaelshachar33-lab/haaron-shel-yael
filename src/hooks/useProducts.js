@@ -15,7 +15,12 @@ export function useProducts() {
         const q = query(collection(db, 'products'), orderBy('dateAdded', 'desc'))
         const snap = await getDocs(q)
         if (snap.empty) {
-          setProducts(defaultProducts)
+          const seeded = await Promise.all(
+            defaultProducts.map(({ id: _id, ...p }) =>
+              addDoc(collection(db, 'products'), p).then(ref => ({ id: ref.id, ...p }))
+            )
+          )
+          setProducts(seeded)
         } else {
           setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })))
         }

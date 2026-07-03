@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck } from 'lucide-react'
+import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard } from 'lucide-react'
 
 const DETAIL_FIELDS = [
   ['type',      'סוג פריט'],
@@ -14,6 +14,7 @@ const DETAIL_FIELDS = [
 
 export default function ProductModal({ product, isSaved, onClose, onToggleSave, whatsappNumber }) {
   const [activeImg, setActiveImg] = useState(0)
+  const [showBit, setShowBit] = useState(false)
 
   const prev = useCallback(() => setActiveImg(i => Math.max(0, i - 1)), [])
   const next = useCallback(() => setActiveImg(i => Math.min(product.images.length - 1, i + 1)), [product.images.length])
@@ -190,6 +191,23 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <MessageCircle className="w-5 h-5" />
                 צרי קשר ב-WhatsApp
               </a>
+
+              <button
+                onClick={() => setShowBit(p => !p)}
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+              >
+                <CreditCard className="w-4 h-4" />
+                תשלום בביט
+              </button>
+
+              {showBit && (
+                <div className="bg-cream-200 rounded-2xl p-4 text-center space-y-1 animate-fade-in">
+                  <p className="text-xs text-warm-gray">שלחי ביט למספר</p>
+                  <p className="font-frank text-2xl text-charcoal tracking-wide">{whatsappNumber.replace('972', '0')}</p>
+                  <p className="text-xs text-warm-gray">סכום: <span className="font-semibold text-charcoal">₪{product.pricePickup}</span> (איסוף) או <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span> (משלוח)</p>
+                  <p className="text-[10px] text-taupe-400 pt-1">לאחר התשלום שלחי לי הודעה ב-WhatsApp</p>
+                </div>
+              )}
 
               <button
                 onClick={onToggleSave}
