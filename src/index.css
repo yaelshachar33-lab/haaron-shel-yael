@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    direction: rtl;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background-color: #F8F4F0;
+    color: #2C2C2C;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-charcoal text-cream-100 px-6 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:bg-taupe-600 hover:shadow-lg cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 border border-charcoal text-charcoal px-6 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:bg-charcoal hover:text-cream-100 cursor-pointer;
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:bg-green-600 hover:shadow-md cursor-pointer;
+  }
+
+  .card-hover {
+    @apply shadow-sm hover:shadow-lg transition-all duration-300;
+  }
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: #F8F4F0; }
+::-webkit-scrollbar-thumb  { background: #C4A882; border-radius: 2px; }
+
+/* Hide scrollbar on filter row */
+.filter-scroll::-webkit-scrollbar { display: none; }
+.filter-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Price range slider */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  background: #E0D9D2;
+  border-radius: 9999px;
+  height: 4px;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2C2C2C;
+  margin-top: -6px;
+  cursor: pointer;
+}
