@@ -1,10 +1,12 @@
 import { useContent } from '../hooks/useContent'
+import { useProducts } from '../hooks/useProducts'
 
 // החליפי את הנתיב לסרטון שלך לאחר שהעלית לתיקיית public/
 const BANNER_VIDEO = '/banner-video.mp4.mp4'
 
 export default function Hero() {
   const { content } = useContent()
+  const { products } = useProducts()
 
   return (
     <section id="home">
@@ -74,7 +76,9 @@ export default function Hero() {
           <div className="flex justify-center gap-10 sm:gap-20">
             {content.stats.map(({ value, label }) => (
               <div key={label} className="text-center">
-                <div className="font-frank text-3xl text-charcoal">{value}</div>
+                <div className="font-frank text-3xl text-charcoal">
+                  {label === 'פריטים זמינים' ? `${products.length}+` : value}
+                </div>
                 <div className="text-xs text-warm-gray mt-1 tracking-wide">{label}</div>
               </div>
             ))}
