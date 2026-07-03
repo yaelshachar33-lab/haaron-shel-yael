@@ -16,7 +16,7 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
         />
 
         {/* Just Landed badge */}
-        {product.isJustLanded && (
+        {((Date.now() - new Date(product.dateAdded).getTime()) / 86400000) <= 3 && (
           <div className="absolute top-3 right-3 bg-charcoal text-cream-100 text-[11px] px-3 py-1 rounded-full font-medium tracking-wide z-10">
             ✨ Just Landed
           </div>

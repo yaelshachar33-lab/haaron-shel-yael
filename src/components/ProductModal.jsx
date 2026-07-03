@@ -80,7 +80,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 className="w-full h-full object-cover animate-fade-in"
               />
 
-              {product.isJustLanded && (
+              {((Date.now() - new Date(product.dateAdded).getTime()) / 86400000) <= 3 && (
                 <div className="absolute top-4 right-4 bg-charcoal text-cream-100 text-xs px-3 py-1.5 rounded-full font-medium">
                   ✨ Just Landed
                 </div>
