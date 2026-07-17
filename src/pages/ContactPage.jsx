@@ -33,9 +33,10 @@ export default function ContactPage() {
         </div>
 
         <h1 className="font-frank text-4xl sm:text-5xl font-light text-charcoal mb-4">צרי קשר</h1>
-        <p className="text-warm-gray text-base font-light mb-14 leading-relaxed">
-          שמחה לשמוע ממך! לכל שאלה על פריט, מידה, או כל דבר אחר — אני כאן.
+        <p className="text-warm-gray text-base font-light mb-4 leading-relaxed">
+          שמחה לשמוע ממך! יש שאלה על פריט? רוצה לדעת עוד פרטים? מוזמנת לפנות אלי ישירות בוואטסאפ ואחזור אליך בהקדם.
         </p>
+        <p className="text-taupe-400 text-sm mb-14">עונה בימי א׳–ה׳ בין 9:00–21:00</p>
 
         <div className="flex flex-col gap-5 items-center">
 
