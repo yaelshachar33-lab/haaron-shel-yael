@@ -39,6 +39,7 @@ export default function Footer() {
               <li><Link to="/about" className="hover:text-cream-100 transition-colors">עלי</Link></li>
 
               <li><Link to="/terms" className="hover:text-cream-100 transition-colors">תקנון</Link></li>
+              <li><Link to="/contact" className="hover:text-cream-100 transition-colors">צרי קשר</Link></li>
             </ul>
           </div>
 
