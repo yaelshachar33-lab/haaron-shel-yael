@@ -26,8 +26,9 @@ export default {
         'warm-gray': '#8B8178',
       },
       fontFamily: {
-        heebo: ['Heebo', 'sans-serif'],
-        frank: ['"Frank Ruhl Libre"', 'serif'],
+        heebo:     ['Assistant', 'sans-serif'],
+        frank:     ['Assistant', 'sans-serif'],
+        assistant: ['Assistant', 'sans-serif'],
       },
       animation: {
         'fade-in':   'fadeIn 0.5s ease-in-out',
