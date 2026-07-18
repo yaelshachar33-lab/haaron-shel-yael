@@ -2,6 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 
+const EJ_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_iu828sa'
+const EJ_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_3j8cm77'
+const EJ_KEY      = import.meta.env.VITE_EMAILJS_PUBLIC_KEY  || 'kevgZjm-dmrw3sWlk'
+
 const DETAIL_FIELDS = [
   ['type',      'סוג פריט'],
   ['size',      'מידה'],
@@ -39,8 +43,8 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
     setSendError(false)
     try {
       await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        EJ_SERVICE,
+        EJ_TEMPLATE,
         {
           product_name: product.name,
           price: product.priceDelivery,
@@ -49,7 +53,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           address: formData.address,
           payment_ref: formData.paymentRef,
         },
-        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY }
+        { publicKey: EJ_KEY }
       )
       setSent(true)
     } catch {
