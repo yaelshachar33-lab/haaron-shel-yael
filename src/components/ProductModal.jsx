@@ -305,7 +305,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   <p className="text-xs text-warm-gray">שלחי ביט למספר</p>
                   <p className="font-frank text-2xl text-charcoal tracking-wide">{whatsappNumber.replace('972', '0')}</p>
                   <p className="text-xs text-warm-gray">סכום: <span className="font-semibold text-charcoal">₪{product.pricePickup}</span> (איסוף) או <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span> (משלוח)</p>
-                  <p className="text-[10px] text-taupe-400 pt-1">לאחר התשלום שלחי לי הודעה ב-WhatsApp</p>
+                  <p className="text-sm text-charcoal pt-1 font-medium">לאחר התשלום שלחי לי הודעה ב-WhatsApp</p>
                 </div>
               )}
 
