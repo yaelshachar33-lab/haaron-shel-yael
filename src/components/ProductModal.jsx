@@ -139,7 +139,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           </div>
 
           {/* ── Right: details ── */}
-          <div className="sm:w-[55%] p-4 sm:p-8 overflow-y-auto">
+          <div className="sm:w-[55%] p-4 sm:p-8 sm:overflow-y-auto">
             <p className="text-xs text-taupe-500 font-medium tracking-widest uppercase mb-1">{product.type}</p>
             <h2 className="font-frank text-2xl sm:text-3xl font-light text-charcoal mb-1">
               {product.name}
