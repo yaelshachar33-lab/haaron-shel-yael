@@ -68,11 +68,11 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         </button>
 
         {/* Content */}
-        <div className="flex flex-col sm:flex-row overflow-y-auto">
+        <div className="flex flex-col sm:flex-row overflow-y-auto flex-1 min-h-0">
 
           {/* ── Left: images ── */}
           <div className="sm:w-[45%] shrink-0 bg-cream-200">
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative h-[220px] sm:h-auto sm:aspect-[3/4] overflow-hidden">
               <img
                 key={activeImg}
                 src={product.images[activeImg]}
@@ -139,15 +139,15 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           </div>
 
           {/* ── Right: details ── */}
-          <div className="sm:w-[55%] p-5 sm:p-8 overflow-y-auto">
+          <div className="sm:w-[55%] p-4 sm:p-8 overflow-y-auto">
             <p className="text-xs text-taupe-500 font-medium tracking-widest uppercase mb-1">{product.type}</p>
             <h2 className="font-frank text-2xl sm:text-3xl font-light text-charcoal mb-1">
               {product.name}
             </h2>
-            <p className="text-sm text-warm-gray mb-5">{product.brand}</p>
+            <p className="text-sm text-charcoal/70 mb-5">{product.brand}</p>
 
             {product.description && (
-              <p className="text-sm text-warm-gray leading-relaxed mb-5 pb-5 border-b border-cream-300">
+              <p className="text-sm sm:text-sm text-charcoal/80 leading-relaxed mb-5 pb-5 border-b border-cream-300">
                 {product.description}
               </p>
             )}
@@ -156,7 +156,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
             <div className="grid grid-cols-2 gap-2 mb-6">
               {DETAIL_FIELDS.map(([key, label]) => (
                 <div key={key} className="bg-cream-200 rounded-xl p-3">
-                  <div className="text-[10px] text-warm-gray mb-0.5 font-medium">{label}</div>
+                  <div className="text-xs text-charcoal/60 mb-0.5 font-medium">{label}</div>
                   <div className="text-sm font-medium text-charcoal">{product[key]}</div>
                 </div>
               ))}
