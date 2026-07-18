@@ -56,8 +56,8 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         { publicKey: EJ_KEY }
       )
       setSent(true)
-    } catch {
-      setSendError(true)
+    } catch (err) {
+      setSendError(err?.text || err?.message || JSON.stringify(err) || 'שגיאה לא ידועה')
     } finally {
       setSending(false)
     }
@@ -276,7 +276,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
                   <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span></div>
-                  {sendError && <p className="text-xs text-red-500 text-center">שגיאה בשליחה, נסי שוב</p>}
+                  {sendError && <p className="text-xs text-red-500 text-center">שגיאה: {sendError}</p>}
                   <button
                     type="submit"
                     disabled={sending}
