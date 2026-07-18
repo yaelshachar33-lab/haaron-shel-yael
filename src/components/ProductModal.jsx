@@ -266,7 +266,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   />
                   <input
                     required
-                    placeholder="אסמכתא לתשלום (מספר אישור ביט/פייבוקס)"
+                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות (ביט/פייבוקס)"
                     value={formData.paymentRef}
                     onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
