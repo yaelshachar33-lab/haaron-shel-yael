@@ -292,7 +292,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
                   <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
                   <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
-                  <p className="text-xs text-warm-gray mt-1">אחזרי אליך בהקדם</p>
+                  <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם</p>
                 </div>
               )}
 
