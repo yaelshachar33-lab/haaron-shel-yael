@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard } from 'lucide-react'
+import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle } from 'lucide-react'
+import emailjs from '@emailjs/browser'
 
 const DETAIL_FIELDS = [
   ['type',      'סוג פריט'],
@@ -15,13 +16,47 @@ const DETAIL_FIELDS = [
 export default function ProductModal({ product, isSaved, onClose, onToggleSave, whatsappNumber }) {
   const [activeImg, setActiveImg] = useState(0)
   const [showBit, setShowBit] = useState(false)
+  const [showDeliveryForm, setShowDeliveryForm] = useState(false)
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', address: '' })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [sendError, setSendError] = useState(false)
 
   const prev = useCallback(() => setActiveImg(i => Math.max(0, i - 1)), [])
   const next = useCallback(() => setActiveImg(i => Math.min(product.images.length - 1, i + 1)), [product.images.length])
 
   useEffect(() => {
     setActiveImg(0)
+    setShowDeliveryForm(false)
+    setSent(false)
+    setSendError(false)
+    setFormData({ firstName: '', lastName: '', address: '' })
   }, [product.id])
+
+  const handleDeliverySubmit = async (e) => {
+    e.preventDefault()
+    setSending(true)
+    setSendError(false)
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          product_name: product.name,
+          price: product.priceDelivery,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          address: formData.address,
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      )
+      setSent(true)
+    } catch {
+      setSendError(true)
+    } finally {
+      setSending(false)
+    }
+  }
 
   useEffect(() => {
     const onKey = e => {
@@ -191,6 +226,63 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <MessageCircle className="w-5 h-5" />
                 צרי קשר ב-WhatsApp
               </a>
+
+              {/* Delivery order form */}
+              <button
+                onClick={() => { setShowDeliveryForm(p => !p); setSent(false); setSendError(false) }}
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+              >
+                <Truck className="w-4 h-4" />
+                הזמנה עם משלוח
+              </button>
+
+              {showDeliveryForm && !sent && (
+                <form onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
+                  <p className="text-xs text-warm-gray text-center mb-2">מלאי פרטים ונשלח אליך אישור</p>
+                  <div className="flex gap-2">
+                    <input
+                      required
+                      placeholder="שם פרטי"
+                      value={formData.firstName}
+                      onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
+                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                    />
+                    <input
+                      required
+                      placeholder="שם משפחה"
+                      value={formData.lastName}
+                      onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
+                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                    />
+                  </div>
+                  <textarea
+                    required
+                    placeholder="כתובת מלאה (רחוב, מספר, עיר, מיקוד)"
+                    value={formData.address}
+                    onChange={e => setFormData(p => ({ ...p, address: e.target.value }))}
+                    rows={2}
+                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400 resize-none"
+                  />
+                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span></div>
+                  {sendError && <p className="text-xs text-red-500 text-center">שגיאה בשליחה, נסי שוב</p>}
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60"
+                  >
+                    <Send className="w-4 h-4" />
+                    {sending ? 'שולחת...' : 'שלחי הזמנה'}
+                  </button>
+                </form>
+              )}
+
+              {sent && (
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
+                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
+                  <p className="text-xs text-warm-gray mt-1">אחזרי אליך בהקדם</p>
+                </div>
+              )}
 
               <button
                 onClick={() => setShowBit(p => !p)}
