@@ -72,7 +72,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
 
           {/* ── Left: images ── */}
           <div className="sm:w-[45%] shrink-0 bg-cream-200">
-            <div className="relative h-[220px] sm:h-auto sm:aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-[3/4] overflow-hidden">
               <img
                 key={activeImg}
                 src={product.images[activeImg]}

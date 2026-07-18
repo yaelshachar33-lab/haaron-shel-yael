@@ -23,7 +23,7 @@ export default {
           400: '#D4A898',
         },
         charcoal: '#2C2C2C',
-        'warm-gray': '#8B8178',
+        'warm-gray': '#5C5550',
       },
       fontFamily: {
         heebo:     ['Assistant', 'sans-serif'],

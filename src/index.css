@@ -39,6 +39,11 @@
   }
 }
 
+/* Larger base font on mobile */
+@media (max-width: 639px) {
+  html { font-size: 17px; }
+}
+
 /* Thin scrollbar */
 ::-webkit-scrollbar        { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track  { background: #F8F4F0; }
