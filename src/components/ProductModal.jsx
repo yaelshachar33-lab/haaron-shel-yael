@@ -17,7 +17,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
   const [activeImg, setActiveImg] = useState(0)
   const [showBit, setShowBit] = useState(false)
   const [showDeliveryForm, setShowDeliveryForm] = useState(false)
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', address: '' })
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', address: '', paymentRef: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [sendError, setSendError] = useState(false)
@@ -30,7 +30,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
     setShowDeliveryForm(false)
     setSent(false)
     setSendError(false)
-    setFormData({ firstName: '', lastName: '', address: '' })
+    setFormData({ firstName: '', lastName: '', address: '', paymentRef: '' })
   }, [product.id])
 
   const handleDeliverySubmit = async (e) => {
@@ -47,6 +47,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           first_name: formData.firstName,
           last_name: formData.lastName,
           address: formData.address,
+          payment_ref: formData.paymentRef,
         },
         { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY }
       )
@@ -262,6 +263,13 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     onChange={e => setFormData(p => ({ ...p, address: e.target.value }))}
                     rows={2}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400 resize-none"
+                  />
+                  <input
+                    required
+                    placeholder="אסמכתא לתשלום (מספר אישור ביט/פייבוקס)"
+                    value={formData.paymentRef}
+                    onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))}
+                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
                   <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span></div>
                   {sendError && <p className="text-xs text-red-500 text-center">שגיאה בשליחה, נסי שוב</p>}
