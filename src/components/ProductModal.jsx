@@ -48,7 +48,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           last_name: formData.lastName,
           address: formData.address,
         },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY }
       )
       setSent(true)
     } catch {
