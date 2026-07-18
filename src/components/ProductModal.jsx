@@ -322,7 +322,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 }`}
               >
                 <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-300 text-rose-400' : ''}`} />
-                {isSaved ? 'הסירי מהשמורים' : 'שמרי פריט ♡'}
+                {isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
               </button>
             </div>
           </div>
