@@ -229,7 +229,7 @@ function LoginScreen({ onLogin }) {
 }
 
 /* ── About Editor ── */
-function AboutEditor({ onSave }) {
+function AboutEditor({ onSave, onError }) {
   const { content, updateContent } = useContent()
   const [intro, setIntro]   = useState(content.aboutIntro || '')
   const [story, setStory]   = useState((content.aboutStory || []).map(s => s))
@@ -244,15 +244,19 @@ function AboutEditor({ onSave }) {
   const addVal  = () => setValues(prev => [...prev, { title: '', text: '' }])
   const rmVal   = (i) => setValues(prev => prev.filter((_, idx) => idx !== i))
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    updateContent({
-      aboutIntro: intro,
-      aboutStory: story.filter(Boolean),
-      aboutValues: values.filter(v => v.title || v.text),
-      aboutClosingQuote: quote,
-    })
-    onSave()
+    try {
+      await updateContent({
+        aboutIntro: intro,
+        aboutStory: story.filter(Boolean),
+        aboutValues: values.filter(v => v.title || v.text),
+        aboutClosingQuote: quote,
+      })
+      onSave()
+    } catch {
+      onError('שגיאה בשמירה – בדקי את חיבור האינטרנט')
+    }
   }
 
   return (
@@ -329,7 +333,7 @@ function AboutEditor({ onSave }) {
 }
 
 /* ── Terms Editor ── */
-function TermsEditor({ onSave }) {
+function TermsEditor({ onSave, onError }) {
   const { content, updateContent } = useContent()
   const [sections, setSections] = useState(
     (content.terms || []).map(s => ({ ...s }))
@@ -344,10 +348,14 @@ function TermsEditor({ onSave }) {
   const remove = (id) =>
     setSections(prev => prev.filter(s => s.id !== id))
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    updateContent({ terms: sections.filter(s => s.title || s.text) })
-    onSave()
+    try {
+      await updateContent({ terms: sections.filter(s => s.title || s.text) })
+      onSave()
+    } catch {
+      onError('שגיאה בשמירה – בדקי את חיבור האינטרנט')
+    }
   }
 
   return (
@@ -603,14 +611,14 @@ export default function AdminPage() {
           <div className="max-w-2xl">
             <h2 className="text-lg font-semibold text-charcoal mb-6">עריכת עמוד עלי</h2>
             <div className="bg-white rounded-3xl p-6 shadow-sm">
-              <AboutEditor onSave={() => showToast('עמוד עלי עודכן בהצלחה ✓')} />
+              <AboutEditor onSave={() => showToast('עמוד עלי עודכן בהצלחה ✓')} onError={showToast} />
             </div>
           </div>
         ) : tab === 'terms' ? (
           <div className="max-w-2xl">
             <h2 className="text-lg font-semibold text-charcoal mb-6">עריכת תקנון</h2>
             <div className="bg-white rounded-3xl p-6 shadow-sm">
-              <TermsEditor onSave={() => showToast('התקנון עודכן בהצלחה ✓')} />
+              <TermsEditor onSave={() => showToast('התקנון עודכן בהצלחה ✓')} onError={showToast} />
             </div>
           </div>
         ) : (

@@ -63,7 +63,12 @@ export function useContent() {
   const updateContent = async (updates) => {
     const next = { ...content, ...updates }
     setContent(next)
-    await setDoc(doc(db, 'config', 'content'), next)
+    try {
+      await setDoc(doc(db, 'config', 'content'), next)
+    } catch (e) {
+      console.error('useContent setDoc error:', e)
+      throw e
+    }
   }
 
   return { content, updateContent }
