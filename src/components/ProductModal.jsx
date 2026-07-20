@@ -162,7 +162,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
 
             {/* Thumbnails */}
             {product.images.length > 1 && (
-              <div className="flex justify-end gap-2 p-3 bg-cream-100">
+              <div className="flex justify-start gap-2 p-3 bg-cream-100">
                 {product.images.map((img, i) => (
                   <button
                     key={i}
