@@ -27,7 +27,7 @@ function Label({ children }) {
 const inp = 'w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-taupe-400 bg-white transition-colors'
 
 /* ── Product Form (add / edit) ── */
-function ProductForm({ initial, onSave, onCancel }) {
+function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
   const [f, setF] = useState(
     initial
       ? { ...initial, images: initial.images?.length ? initial.images : [''] }
@@ -82,7 +82,7 @@ function ProductForm({ initial, onSave, onCancel }) {
           <Label>מותג</Label>
           <input value={f.brand} onChange={e => set('brand', e.target.value)}
             list="brands-list" className={inp} placeholder="Zara, Mango..." />
-          <datalist id="brands-list">{BRANDS.map(b => <option key={b} value={b} />)}</datalist>
+          <datalist id="brands-list">{existingBrands.map(b => <option key={b} value={b} />)}</datalist>
         </div>
         <div>
           <Label>סגנון</Label>
@@ -550,6 +550,7 @@ export default function AdminPage() {
   }
 
   const isFormOpen = adding || !!editing
+  const existingBrands = [...new Set(products.map(p => p.brand).filter(Boolean))].sort()
 
   return (
     <div className="min-h-screen bg-gray-50 font-heebo" dir="rtl">
@@ -708,6 +709,7 @@ export default function AdminPage() {
                     initial={editing || null}
                     onSave={adding ? handleAdd : handleUpdate}
                     onCancel={() => { setAdding(false); setEditing(null) }}
+                    existingBrands={existingBrands}
                   />
                 </div>
               </div>
