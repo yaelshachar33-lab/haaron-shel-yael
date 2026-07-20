@@ -321,7 +321,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     : 'border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal'
                 }`}
               >
-                {isSaved ? <Heart className="w-4 h-4 fill-rose-300 text-rose-400" /> : null}
+                <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-300 text-rose-400' : ''}`} />
                 {isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
               </button>
             </div>
