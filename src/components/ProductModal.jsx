@@ -243,7 +243,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
 
               {showDeliveryForm && !sent && (
                 <form onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
-                  <p className="text-xs text-warm-gray text-center mb-2">מלאי פרטים ונשלח אליך אישור</p>
+                  <p className="text-xs text-warm-gray text-center mb-2">הפריט יישלח לאחר הסדרת התשלום. יש למלא כתובת למשלוח ומספר אסמכתא לתשלום</p>
                   <div className="flex gap-2">
                     <input
                       required
