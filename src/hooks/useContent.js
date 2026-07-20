@@ -45,6 +45,7 @@ export const DEFAULT_CONTENT = {
 
 export function useContent() {
   const [content, setContent] = useState(DEFAULT_CONTENT)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetch = async () => {
@@ -55,6 +56,8 @@ export function useContent() {
         }
       } catch (e) {
         console.error(e)
+      } finally {
+        setLoading(false)
       }
     }
     fetch()
@@ -71,5 +74,5 @@ export function useContent() {
     }
   }
 
-  return { content, updateContent }
+  return { content, loading, updateContent }
 }

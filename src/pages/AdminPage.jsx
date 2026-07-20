@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Plus, Edit2, Trash2, LogOut, Eye, Save, X,
@@ -230,11 +230,22 @@ function LoginScreen({ onLogin }) {
 
 /* ── About Editor ── */
 function AboutEditor({ onSave, onError }) {
-  const { content, updateContent } = useContent()
-  const [intro, setIntro]   = useState(content.aboutIntro || '')
-  const [story, setStory]   = useState((content.aboutStory || []).map(s => s))
-  const [values, setValues] = useState((content.aboutValues || []).map(v => ({ ...v })))
-  const [quote, setQuote]   = useState(content.aboutClosingQuote || '')
+  const { content, loading, updateContent } = useContent()
+  const [intro, setIntro]   = useState('')
+  const [story, setStory]   = useState([])
+  const [values, setValues] = useState([])
+  const [quote, setQuote]   = useState('')
+  const [ready, setReady]   = useState(false)
+
+  useEffect(() => {
+    if (!loading && !ready) {
+      setIntro(content.aboutIntro || '')
+      setStory((content.aboutStory || []).map(s => s))
+      setValues((content.aboutValues || []).map(v => ({ ...v })))
+      setQuote(content.aboutClosingQuote || '')
+      setReady(true)
+    }
+  }, [loading])
 
   const setStoryLine = (i, v) => setStory(prev => prev.map((s, idx) => idx === i ? v : s))
   const addStory     = () => setStory(prev => [...prev, ''])
@@ -334,10 +345,16 @@ function AboutEditor({ onSave, onError }) {
 
 /* ── Terms Editor ── */
 function TermsEditor({ onSave, onError }) {
-  const { content, updateContent } = useContent()
-  const [sections, setSections] = useState(
-    (content.terms || []).map(s => ({ ...s }))
-  )
+  const { content, loading, updateContent } = useContent()
+  const [sections, setSections] = useState([])
+  const [ready, setReady]       = useState(false)
+
+  useEffect(() => {
+    if (!loading && !ready) {
+      setSections((content.terms || []).map(s => ({ ...s })))
+      setReady(true)
+    }
+  }, [loading])
 
   const set = (id, key, val) =>
     setSections(prev => prev.map(s => s.id === id ? { ...s, [key]: val } : s))
