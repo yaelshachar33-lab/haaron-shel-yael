@@ -465,6 +465,89 @@ function TermsEditor({ onSave, onError }) {
   )
 }
 
+/* ── Privacy Editor ── */
+function PrivacyEditor({ onSave, onError }) {
+  const { content, loading, updateContent } = useContent()
+  const [sections, setSections] = useState([])
+  const [ready, setReady]       = useState(false)
+
+  useEffect(() => {
+    if (!loading && !ready) {
+      setSections((content.privacy || []).map(s => ({ ...s })))
+      setReady(true)
+    }
+  }, [loading])
+
+  const set = (id, key, val) =>
+    setSections(prev => prev.map(s => s.id === id ? { ...s, [key]: val } : s))
+
+  const add = () =>
+    setSections(prev => [...prev, { id: Date.now(), title: '', text: '' }])
+
+  const remove = (id) =>
+    setSections(prev => prev.filter(s => s.id !== id))
+
+  const submit = async (e) => {
+    e.preventDefault()
+    try {
+      await updateContent({ privacy: sections.filter(s => s.title || s.text) })
+      onSave()
+    } catch {
+      onError('שגיאה בשמירה – בדקי את חיבור האינטרנט')
+    }
+  }
+
+  return (
+    <form onSubmit={submit} dir="rtl" className="space-y-4">
+      <p className="text-xs text-warm-gray">הכותרות יוצגו בפונט Frank Ruhl Libre (כמו כותרות האתר)</p>
+
+      {sections.map((s, i) => (
+        <div key={s.id} className="bg-taupe-300/20 rounded-2xl p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-warm-gray">סעיף {i + 1}</span>
+            <button type="button" onClick={() => remove(s.id)}
+              className="text-gray-300 hover:text-red-400 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div>
+            <Label>כותרת</Label>
+            <input
+              value={s.title}
+              onChange={e => set(s.id, 'title', e.target.value)}
+              className={inp}
+              placeholder="כללי / שמירת מידע..."
+            />
+          </div>
+          <div>
+            <Label>תוכן</Label>
+            <textarea
+              value={s.text}
+              onChange={e => set(s.id, 'text', e.target.value)}
+              rows={3}
+              className={inp + ' resize-none'}
+              placeholder="הכניסי את תוכן הסעיף..."
+            />
+          </div>
+        </div>
+      ))}
+
+      <button type="button" onClick={add}
+        className="flex items-center gap-1.5 text-sm text-taupe-500 hover:text-charcoal transition-colors font-medium">
+        <Plus className="w-4 h-4" /> הוספת סעיף חדש
+      </button>
+
+      <div className="pt-2 border-t border-gray-100">
+        <button type="submit"
+          className="w-full flex items-center justify-center gap-2 bg-charcoal text-white rounded-xl py-3 text-sm font-medium hover:bg-taupe-600 transition-colors">
+          <Save className="w-4 h-4" />
+          שמירת מדיניות הפרטיות
+        </button>
+      </div>
+    </form>
+  )
+}
+
 function ContentEditor({ onSave }) {
   const { content, updateContent } = useContent()
   const [c, setC] = useState({ ...content, story: [...content.story], stats: content.stats.map(s => ({...s})) })
@@ -736,7 +819,7 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
         <div className="flex gap-1 bg-gray-100 rounded-2xl p-1 w-fit">
-          {[['products', <Package className="w-4 h-4" />, 'פריטים'], ['orders', <FileText className="w-4 h-4" />, 'הזמנות'], ['content', <FileText className="w-4 h-4" />, 'תוכן האתר'], ['about', <FileText className="w-4 h-4" />, 'עמוד עלי'], ['terms', <FileText className="w-4 h-4" />, 'תקנון']].map(([id, icon, label]) => (
+          {[['products', <Package className="w-4 h-4" />, 'פריטים'], ['orders', <FileText className="w-4 h-4" />, 'הזמנות'], ['content', <FileText className="w-4 h-4" />, 'תוכן האתר'], ['about', <FileText className="w-4 h-4" />, 'עמוד עלי'], ['terms', <FileText className="w-4 h-4" />, 'תקנון'], ['privacy', <FileText className="w-4 h-4" />, 'מדיניות פרטיות']].map(([id, icon, label]) => (
             <button key={id} onClick={() => setTab(id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 tab === id ? 'bg-white text-charcoal shadow-sm' : 'text-warm-gray hover:text-charcoal'
@@ -769,6 +852,13 @@ export default function AdminPage() {
             <h2 className="text-lg font-semibold text-charcoal mb-6">עריכת תקנון</h2>
             <div className="bg-white rounded-3xl p-6 shadow-sm">
               <TermsEditor onSave={() => showToast('התקנון עודכן בהצלחה ✓')} onError={showToast} />
+            </div>
+          </div>
+        ) : tab === 'privacy' ? (
+          <div className="max-w-2xl">
+            <h2 className="text-lg font-semibold text-charcoal mb-6">עריכת מדיניות פרטיות</h2>
+            <div className="bg-white rounded-3xl p-6 shadow-sm">
+              <PrivacyEditor onSave={() => showToast('מדיניות הפרטיות עודכנה בהצלחה ✓')} onError={showToast} />
             </div>
           </div>
         ) : (
