@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { SlidersHorizontal, ChevronDown, X } from 'lucide-react'
 import { SIZES } from '../data/products'
 
@@ -32,20 +32,6 @@ function Select({ label, value, onChange, options }) {
 
 export default function FilterBar({ filters, setFilters, sortBy, setSortBy, defaultFilters, products = [] }) {
   const [open, setOpen] = useState(false)
-  const [hidden, setHidden] = useState(false)
-  const lastY = useRef(0)
-
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY
-      if (y < 120) { setHidden(false); lastY.current = y; return }
-      if (y > lastY.current + 8) { setHidden(true); setOpen(false) }
-      else if (y < lastY.current - 8) setHidden(false)
-      lastY.current = y
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   const set = (key, val) => setFilters(prev => ({ ...prev, [key]: val }))
 
@@ -57,7 +43,7 @@ export default function FilterBar({ filters, setFilters, sortBy, setSortBy, defa
   ].filter(Boolean).length
 
   return (
-    <div className={`sticky top-[65px] z-30 bg-cream-100/95 backdrop-blur-sm border-b border-cream-300 transition-transform duration-300 ${hidden ? '-translate-y-[120%]' : 'translate-y-0'}`}>
+    <div className={`${activeCount === 0 ? 'sticky top-[65px]' : 'relative'} z-30 bg-cream-100/95 backdrop-blur-sm border-b border-cream-300`}>
 
       {/* Control row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
