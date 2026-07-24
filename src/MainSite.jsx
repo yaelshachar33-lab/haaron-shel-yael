@@ -67,7 +67,7 @@ export default function MainSite() {
       />
       <Hero />
       <main id="items">
-        <div className="sticky top-32 z-30">
+        <div className="sm:sticky sm:top-32 z-30">
           <FilterBar
             filters={filters}
             setFilters={setFilters}
