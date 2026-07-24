@@ -169,6 +169,18 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
         </button>
       </div>
 
+      {/* Sold toggle */}
+      <label className="flex items-center gap-3 cursor-pointer select-none pt-1">
+        <div
+          onClick={() => set('sold', !f.sold)}
+          className={`w-11 h-6 rounded-full transition-colors duration-200 flex items-center px-0.5 ${f.sold ? 'bg-charcoal' : 'bg-gray-200'}`}
+        >
+          <div className={`w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${f.sold ? 'translate-x-5' : 'translate-x-0'}`} style={{direction:'ltr'}} />
+        </div>
+        <span className="text-sm font-medium text-charcoal">הפריט נמכר</span>
+        {f.sold && <span className="text-xs text-warm-gray">(יוחשך באתר ולא ניתן להזמין)</span>}
+      </label>
+
       {/* Submit */}
       <div className="flex gap-3 pt-2 border-t border-gray-100">
         <button type="submit"

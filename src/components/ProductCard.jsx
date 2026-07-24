@@ -69,12 +69,21 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
           </span>
         </button>
 
+        {/* Sold overlay */}
+        {product.sold && (
+          <div className="absolute inset-0 bg-charcoal/60 flex items-center justify-center z-10">
+            <span className="bg-white text-charcoal text-sm font-semibold px-5 py-2 rounded-full shadow">נמכר</span>
+          </div>
+        )}
+
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-charcoal/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-5">
-          <span className="bg-white text-charcoal text-xs px-5 py-2.5 rounded-full font-medium translate-y-3 group-hover:translate-y-0 transition-transform duration-300 shadow-md">
-            צפייה בפריט
-          </span>
-        </div>
+        {!product.sold && (
+          <div className="absolute inset-0 bg-charcoal/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-5">
+            <span className="bg-white text-charcoal text-xs px-5 py-2.5 rounded-full font-medium translate-y-3 group-hover:translate-y-0 transition-transform duration-300 shadow-md">
+              צפייה בפריט
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Info */}

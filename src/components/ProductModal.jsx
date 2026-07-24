@@ -292,6 +292,13 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
 
             {/* CTA buttons */}
             <div className="flex flex-col gap-3">
+              {product.sold && (
+                <div className="bg-charcoal/10 border border-charcoal/20 rounded-2xl p-4 text-center">
+                  <p className="text-sm font-semibold text-charcoal">הפריט נמכר</p>
+                  <p className="text-xs text-warm-gray mt-1">פריט זה אינו זמין יותר</p>
+                </div>
+              )}
+
               <a
                 href={waUrl}
                 target="_blank"
@@ -303,6 +310,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               </a>
 
               {/* Delivery order form */}
+              {!product.sold && (
               <button
                 onClick={() => { setShowDeliveryForm(p => !p); setSent(false); setSendError(false) }}
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
@@ -310,8 +318,9 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <Truck className="w-4 h-4" />
                 הזמנה עם משלוח
               </button>
+              )}
 
-              {showDeliveryForm && !sent && (
+              {!product.sold && showDeliveryForm && !sent && (
                 <form onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
                   <p className="text-xs text-warm-gray text-center mb-2">הפריט יישלח לאחר הסדרת התשלום. יש למלא כתובת למשלוח ומספר אסמכתא לתשלום</p>
                   <div className="flex gap-2">
@@ -367,6 +376,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               )}
 
               {/* Pickup order form */}
+              {!product.sold && (
               <button
                 onClick={() => { setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false) }}
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
@@ -374,6 +384,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <Package className="w-4 h-4" />
                 הזמנה עם איסוף עצמי
               </button>
+              )}
 
               {showPickupForm && !pickupSent && (
                 <form onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
