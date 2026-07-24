@@ -5,8 +5,9 @@ import AdminPage from './pages/AdminPage'
 import TermsPage from './pages/TermsPage'
 import ContactPage from './pages/ContactPage'
 import AboutPage from './pages/AboutPage'
+import PrivacyPage from './pages/PrivacyPage'
 
-const SUB_PAGES = ['/about', '/contact', '/terms']
+const SUB_PAGES = ['/about', '/contact', '/terms', '/privacy']
 
 function AppContent() {
   const { pathname } = useLocation()
@@ -29,6 +30,7 @@ function AppContent() {
           {pathname === '/about'   && <AboutPage />}
           {pathname === '/contact' && <ContactPage />}
           {pathname === '/terms'   && <TermsPage />}
+          {pathname === '/privacy' && <PrivacyPage />}
         </div>
       )}
 
