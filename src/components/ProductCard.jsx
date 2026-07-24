@@ -1,6 +1,24 @@
-import { Heart } from 'lucide-react'
+import { useState } from 'react'
+import { Heart, Share2 } from 'lucide-react'
 
 export default function ProductCard({ product, isSaved, onProductClick, onToggleSave }) {
+  const [shared, setShared] = useState(false)
+
+  const handleShare = async (e) => {
+    e.stopPropagation()
+    const url = window.location.href.split('#')[0]
+    const text = `ראי את "${product.name}" בהארון של יעל`
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: product.name, text, url })
+      } else {
+        await navigator.clipboard.writeText(url)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      }
+    } catch {}
+  }
+
   return (
     <article
       className="group bg-white rounded-2xl overflow-hidden card-hover cursor-pointer animate-fade-in"
@@ -33,6 +51,22 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
               isSaved ? 'fill-rose-400 text-rose-400' : 'text-warm-gray'
             }`}
           />
+        </button>
+
+        {/* Share button — left edge, vertically centered */}
+        <button
+          onClick={handleShare}
+          aria-label="שתפי פריט"
+          className="absolute left-0 top-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-r-xl shadow-sm flex flex-col items-center gap-1 py-3 px-1.5 transition-colors hover:bg-white"
+          style={{ transform: 'translateY(-50%)' }}
+        >
+          <Share2 className="w-3 h-3 text-green-600" />
+          <span
+            className="text-[9px] font-medium text-green-600"
+            style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+          >
+            {shared ? 'הועתק!' : 'שתפי'}
+          </span>
         </button>
 
         {/* Hover overlay */}
