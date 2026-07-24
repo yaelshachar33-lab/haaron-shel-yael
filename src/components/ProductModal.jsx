@@ -246,12 +246,12 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               </h2>
               <button
                 onClick={onToggleSave}
-                aria-label={isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
-                className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 mt-1 ${
+                className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 mt-1 ${
                   isSaved ? 'bg-blush-100 text-rose-400' : 'bg-cream-200 text-warm-gray hover:bg-blush-100 hover:text-rose-400'
                 }`}
               >
-                <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-300' : ''}`} />
+                <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-rose-300' : ''}`} />
+                {isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
               </button>
             </div>
             <p className="text-sm text-charcoal/70 mb-5">{product.brand}</p>
