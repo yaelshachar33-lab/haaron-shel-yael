@@ -9,7 +9,7 @@ export default function Hero() {
   const { products } = useProducts()
 
   return (
-    <section id="home">
+    <section id="home" className="pt-5 sm:pt-6">
 
       {/* ── Banner ── */}
       <div className="relative w-full h-[55vh] sm:h-[65vh] md:h-[75vh] overflow-hidden bg-cream-200">
@@ -25,18 +25,15 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/20 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 sm:pb-14 px-4 text-center">
-          <p className="text-cream-200 text-[11px] sm:text-xs tracking-[0.4em] font-light mb-3 uppercase">
+          <p className="text-cream-200 text-[13px] sm:text-sm tracking-[0.4em] font-light mb-3 uppercase">
             בוטיק אישי &nbsp;·&nbsp; יד שניה &nbsp;·&nbsp; אופנה מתחדשת
           </p>
-          <h1 className="font-frank text-5xl sm:text-6xl md:text-7xl font-light text-white leading-tight mb-4 drop-shadow-lg">
-            הארון של יעל
-          </h1>
-          <p className="text-cream-200 text-base sm:text-xl font-light mb-7 drop-shadow">
+          <p className="text-cream-200 text-[19px] sm:text-2xl font-light mb-7 drop-shadow">
             {content.bannerSubtitle}
           </p>
           <button
             onClick={() => document.getElementById('items')?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-flex items-center justify-center gap-2 bg-white text-charcoal px-8 py-3.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300 hover:bg-cream-200 hover:shadow-lg shadow-md"
+            className="inline-flex items-center justify-center gap-2 bg-white text-charcoal px-8 py-3.5 rounded-full text-base font-medium tracking-wide transition-all duration-300 hover:bg-cream-200 hover:shadow-lg shadow-md"
           >
             {content.bannerCta}
           </button>
