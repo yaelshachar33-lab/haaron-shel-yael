@@ -16,7 +16,7 @@ const ADMIN_PASSWORD = 'yael1234'
 const EMPTY = {
   name: '', category: 'בגדים', type: '', size: '', fabric: '', brand: '',
   color: '', colorHex: '#C4A882', style: '', condition: '',
-  pricePickup: '', priceDelivery: '', season: '', description: '',
+  pricePickup: '', priceDelivery: '', discount: 0, season: '', description: '',
   images: [''],
 }
 
@@ -138,6 +138,19 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
           <Label>מחיר כולל משלוח (₪) *</Label>
           <input required type="number" min="0" value={f.priceDelivery}
             onChange={e => set('priceDelivery', e.target.value)} className={inp} placeholder="100" />
+        </div>
+        <div>
+          <Label>הנחה (%)</Label>
+          <div className="relative">
+            <input type="number" min="0" max="100" value={f.discount || 0}
+              onChange={e => set('discount', Number(e.target.value))} className={inp + ' pl-8'} placeholder="0" />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-warm-gray">%</span>
+          </div>
+          {f.discount > 0 && f.pricePickup && (
+            <p className="text-xs text-rose-500 mt-1">
+              מחיר לאחר הנחה: ₪{Math.round(Number(f.pricePickup) * (1 - f.discount / 100))}
+            </p>
+          )}
         </div>
       </div>
 

@@ -279,14 +279,28 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   <Package className="w-3.5 h-3.5" />
                   <span>איסוף עצמי</span>
                 </div>
-                <div className="font-frank text-2xl text-charcoal">₪{product.pricePickup}</div>
+                {product.discount > 0 ? (
+                  <div className="flex items-baseline justify-center gap-2">
+                    <div className="font-frank text-2xl text-charcoal">₪{Math.round(product.pricePickup * (1 - product.discount / 100))}</div>
+                    <div className="text-sm text-warm-gray line-through">₪{product.pricePickup}</div>
+                  </div>
+                ) : (
+                  <div className="font-frank text-2xl text-charcoal">₪{product.pricePickup}</div>
+                )}
               </div>
               <div className="flex-1 bg-blush-100 rounded-2xl p-4 text-center">
                 <div className="flex items-center justify-center gap-1 text-warm-gray text-xs mb-1.5">
                   <Truck className="w-3.5 h-3.5" />
                   <span>כולל משלוח</span>
                 </div>
-                <div className="font-frank text-2xl text-charcoal">₪{product.priceDelivery}</div>
+                {product.discount > 0 ? (
+                  <div className="flex items-baseline justify-center gap-2">
+                    <div className="font-frank text-2xl text-charcoal">₪{Math.round(product.priceDelivery * (1 - product.discount / 100))}</div>
+                    <div className="text-sm text-warm-gray line-through">₪{product.priceDelivery}</div>
+                  </div>
+                ) : (
+                  <div className="font-frank text-2xl text-charcoal">₪{product.priceDelivery}</div>
+                )}
               </div>
             </div>
 
@@ -354,7 +368,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
-                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span></div>
+                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span></div>
                   {sendError && <p className="text-xs text-red-500 text-center">שגיאה: {sendError}</p>}
                   <button
                     type="submit"
@@ -412,7 +426,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     onChange={e => setPickupData(p => ({ ...p, paymentRef: e.target.value }))}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
-                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.pricePickup}</span></div>
+                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span></div>
                   {pickupError && <p className="text-xs text-red-500 text-center">שגיאה: {pickupError}</p>}
                   <button
                     type="submit"
@@ -445,7 +459,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 <div className="bg-cream-200 rounded-2xl p-4 text-center space-y-1 animate-fade-in">
                   <p className="text-xs text-warm-gray">שלחי ביט למספר</p>
                   <p className="font-frank text-2xl text-charcoal tracking-wide">{whatsappNumber.replace('972', '0')}</p>
-                  <p className="text-xs text-warm-gray">סכום: <span className="font-semibold text-charcoal">₪{product.pricePickup}</span> (איסוף) או <span className="font-semibold text-charcoal">₪{product.priceDelivery}</span> (משלוח)</p>
+                  <p className="text-xs text-warm-gray">סכום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span> (איסוף) או <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (משלוח)</p>
                   <p className="text-sm text-charcoal pt-1 font-medium">לאחר התשלום שלחי לי הודעה ב-WhatsApp</p>
                 </div>
               )}

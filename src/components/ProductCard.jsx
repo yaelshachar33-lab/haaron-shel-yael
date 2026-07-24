@@ -99,13 +99,19 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
 
         <p className="text-xs text-warm-gray mb-3">{product.brand}</p>
 
-        <div className="flex items-center justify-between">
-          <span className="font-semibold text-charcoal text-sm sm:text-base">
-            ₪{product.pricePickup}
-          </span>
-          <span className="text-[11px] text-taupe-500 font-medium">
-            פרטים ←
-          </span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-semibold text-charcoal text-sm sm:text-base">
+              ₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}
+            </span>
+            {product.discount > 0 && (
+              <>
+                <span className="text-xs text-warm-gray line-through">₪{product.pricePickup}</span>
+                <span className="text-[10px] bg-rose-100 text-rose-500 px-1.5 py-0.5 rounded-full font-medium">-{product.discount}%</span>
+              </>
+            )}
+          </div>
+          <span className="text-[11px] text-taupe-500 font-medium shrink-0">פרטים ←</span>
         </div>
       </div>
     </article>

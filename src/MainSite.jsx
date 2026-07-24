@@ -53,7 +53,7 @@ export default function MainSite() {
     if (filters.brand)  list = list.filter(p => p.brand === filters.brand)
     if (filters.season) list = list.filter(p => p.season === filters.season)
     if (filters.style)  list = list.filter(p => p.style === filters.style)
-    list = list.filter(p => p.pricePickup <= filters.maxPrice)
+    list = list.filter(p => (p.discount > 0 ? Math.round(p.pricePickup * (1 - p.discount / 100)) : p.pricePickup) <= filters.maxPrice)
     if (sortBy === 'newest')     list = [...list].sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded))
     if (sortBy === 'price-asc')  list = [...list].sort((a,b) => a.pricePickup - b.pricePickup)
     if (sortBy === 'price-desc') list = [...list].sort((a,b) => b.pricePickup - a.pricePickup)
