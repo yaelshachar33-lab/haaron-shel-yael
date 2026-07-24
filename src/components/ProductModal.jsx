@@ -240,9 +240,20 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           {/* ── Right: details ── */}
           <div className="sm:w-[55%] p-4 sm:p-8 sm:overflow-y-auto">
             <p className="text-xs text-taupe-500 font-medium tracking-widest uppercase mb-1">{product.type}</p>
-            <h2 className="font-frank text-2xl sm:text-3xl font-light text-charcoal mb-1">
-              {product.name}
-            </h2>
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <h2 className="font-frank text-2xl sm:text-3xl font-light text-charcoal">
+                {product.name}
+              </h2>
+              <button
+                onClick={onToggleSave}
+                aria-label={isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
+                className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 mt-1 ${
+                  isSaved ? 'bg-blush-100 text-rose-400' : 'bg-cream-200 text-warm-gray hover:bg-blush-100 hover:text-rose-400'
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-300' : ''}`} />
+              </button>
+            </div>
             <p className="text-sm text-charcoal/70 mb-5">{product.brand}</p>
 
             {product.description && (
@@ -428,17 +439,6 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 </div>
               )}
 
-              <button
-                onClick={onToggleSave}
-                className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-full border text-sm font-medium transition-all duration-200 ${
-                  isSaved
-                    ? 'bg-blush-100 border-blush-300 text-charcoal'
-                    : 'border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal'
-                }`}
-              >
-                <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-300 text-rose-400' : ''}`} />
-                {isSaved ? 'הסירי מהשמורים' : 'שמרי פריט'}
-              </button>
             </div>
           </div>
         </div>
