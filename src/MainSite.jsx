@@ -67,14 +67,16 @@ export default function MainSite() {
       />
       <Hero />
       <main id="items">
-        <FilterBar
-          filters={filters}
-          setFilters={setFilters}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          defaultFilters={DEFAULT_FILTERS}
-          products={enriched}
-        />
+        <div className="sticky top-16 z-30">
+          <FilterBar
+            filters={filters}
+            setFilters={setFilters}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            defaultFilters={DEFAULT_FILTERS}
+            products={enriched}
+          />
+        </div>
         <ProductGrid
           products={displayed}
           savedIds={savedIds}
