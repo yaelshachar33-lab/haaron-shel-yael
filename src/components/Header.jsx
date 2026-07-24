@@ -11,6 +11,9 @@ export default function Header({ savedCount, showSaved, onToggleSaved, activeCat
       return
     }
     onCategoryChange(activeCategory === tab ? '' : tab)
+    setTimeout(() => {
+      document.getElementById('items')?.scrollIntoView({ behavior: 'smooth' })
+    }, 50)
   }
 
   return (
