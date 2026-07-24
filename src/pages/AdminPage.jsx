@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { useProducts } from '../hooks/useProducts'
 import { useContent } from '../hooks/useContent'
+import { useOrders } from '../hooks/useOrders'
 import { SIZES, BRANDS, SEASONS, STYLES, COLORS } from '../data/products'
 
 // ── Change this to your own password ──────────────────────────────
@@ -540,11 +541,108 @@ function ContentEditor({ onSave }) {
   )
 }
 
+/* ── Orders Manager ── */
+const STATUS_OPTIONS = ['הוזמן', 'התקבל תשלום', 'נשלח']
+const STATUS_COLORS  = { 'הוזמן': 'bg-yellow-100 text-yellow-800', 'התקבל תשלום': 'bg-blue-100 text-blue-800', 'נשלח': 'bg-green-100 text-green-800' }
+
+function OrdersManager() {
+  const { orders, loading, updateStatus } = useOrders()
+
+  const exportCSV = () => {
+    const headers = ['תאריך', 'שם פרטי', 'שם משפחה', 'כתובת', 'פריט', 'מחיר', 'אסמכתא', 'סטאטוס']
+    const rows = orders.map(o => [
+      new Date(o.orderDate).toLocaleDateString('he-IL'),
+      o.firstName || '',
+      o.lastName  || '',
+      o.address   || '',
+      o.productName || '',
+      o.price ? `₪${o.price}` : '',
+      o.paymentRef  || '',
+      o.status      || '',
+    ])
+    const csv = [headers, ...rows]
+      .map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n')
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    a.href     = url
+    a.download = `הזמנות_${new Date().toLocaleDateString('he-IL').replace(/\//g, '-')}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  if (loading) return <p className="text-sm text-warm-gray py-10 text-center">טוענת הזמנות...</p>
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-charcoal">הזמנות ({orders.length})</h2>
+        {orders.length > 0 && (
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-2 bg-charcoal text-white text-sm px-4 py-2 rounded-full hover:bg-taupe-600 transition-colors"
+          >
+            ⬇ ייצוא לאקסל
+          </button>
+        )}
+      </div>
+
+      {orders.length === 0 ? (
+        <div className="text-center py-16 text-warm-gray">
+          <p className="text-sm">אין הזמנות עדיין</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm" dir="rtl">
+              <thead className="bg-cream-100 text-xs text-warm-gray font-medium">
+                <tr>
+                  {['תאריך', 'שם', 'כתובת', 'פריט', 'מחיר', 'אסמכתא', 'סטאטוס'].map(h => (
+                    <th key={h} className="px-4 py-3 text-right whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-cream-200">
+                {orders.map(o => (
+                  <tr key={o.id} className="hover:bg-cream-50 transition-colors">
+                    <td className="px-4 py-3 text-warm-gray whitespace-nowrap text-xs">
+                      {new Date(o.orderDate).toLocaleDateString('he-IL')}
+                    </td>
+                    <td className="px-4 py-3 font-medium text-charcoal whitespace-nowrap">
+                      {o.firstName} {o.lastName}
+                    </td>
+                    <td className="px-4 py-3 text-charcoal max-w-[180px] truncate" title={o.address}>
+                      {o.address}
+                    </td>
+                    <td className="px-4 py-3 text-charcoal whitespace-nowrap">{o.productName}</td>
+                    <td className="px-4 py-3 text-charcoal whitespace-nowrap font-medium">₪{o.price}</td>
+                    <td className="px-4 py-3 text-warm-gray text-xs whitespace-nowrap">{o.paymentRef}</td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={o.status}
+                        onChange={e => updateStatus(o.id, e.target.value)}
+                        className={`text-xs font-medium rounded-full px-3 py-1.5 border-0 cursor-pointer focus:outline-none ${STATUS_COLORS[o.status] || 'bg-gray-100 text-gray-700'}`}
+                      >
+                        {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ── Main Admin Page ── */
 export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
   const [loggedIn, setLoggedIn] = useState(false)
-  const [tab, setTab]           = useState('products') // 'products' | 'content' | 'about' | 'terms'
+  const [tab, setTab]           = useState('products') // 'products' | 'content' | 'about' | 'terms' | 'orders'
   const [editing, setEditing]   = useState(null)
   const [adding, setAdding]     = useState(false)
   const [toast, setToast]       = useState('')
@@ -605,7 +703,7 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
         <div className="flex gap-1 bg-gray-100 rounded-2xl p-1 w-fit">
-          {[['products', <Package className="w-4 h-4" />, 'פריטים'], ['content', <FileText className="w-4 h-4" />, 'תוכן האתר'], ['about', <FileText className="w-4 h-4" />, 'עמוד עלי'], ['terms', <FileText className="w-4 h-4" />, 'תקנון']].map(([id, icon, label]) => (
+          {[['products', <Package className="w-4 h-4" />, 'פריטים'], ['orders', <FileText className="w-4 h-4" />, 'הזמנות'], ['content', <FileText className="w-4 h-4" />, 'תוכן האתר'], ['about', <FileText className="w-4 h-4" />, 'עמוד עלי'], ['terms', <FileText className="w-4 h-4" />, 'תקנון']].map(([id, icon, label]) => (
             <button key={id} onClick={() => setTab(id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 tab === id ? 'bg-white text-charcoal shadow-sm' : 'text-warm-gray hover:text-charcoal'
@@ -617,7 +715,9 @@ export default function AdminPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        {tab === 'content' ? (
+        {tab === 'orders' ? (
+          <OrdersManager />
+        ) : tab === 'content' ? (
           <div className="max-w-2xl">
             <h2 className="text-lg font-semibold text-charcoal mb-6">עריכת תוכן האתר</h2>
             <div className="bg-white rounded-3xl p-6 shadow-sm">

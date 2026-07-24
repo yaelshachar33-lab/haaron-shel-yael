@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle } from 'lucide-react'
 import emailjs from '@emailjs/browser'
+import { db } from '../firebase'
+import { collection, addDoc } from 'firebase/firestore'
 
 const EJ_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_iu828sa'
 const EJ_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_3j8cm77'
@@ -55,6 +57,16 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         },
         { publicKey: EJ_KEY }
       )
+      await addDoc(collection(db, 'orders'), {
+        firstName:   formData.firstName,
+        lastName:    formData.lastName,
+        address:     formData.address,
+        paymentRef:  formData.paymentRef,
+        productName: product.name,
+        price:       product.priceDelivery,
+        orderDate:   new Date().toISOString(),
+        status:      'הוזמן',
+      })
       setSent(true)
     } catch (err) {
       setSendError(err?.text || err?.message || JSON.stringify(err) || 'שגיאה לא ידועה')
