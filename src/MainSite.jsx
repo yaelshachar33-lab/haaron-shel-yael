@@ -23,6 +23,7 @@ export default function MainSite() {
   const [filters, setFilters]     = useState(DEFAULT_FILTERS)
   const [sortBy, setSortBy]       = useState('newest')
   const [showSaved, setShowSaved] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('')
   const [savedIds, setSavedIds]   = useState(() => {
     try { return JSON.parse(localStorage.getItem('savedItems') || '[]') } catch { return [] }
   })
@@ -46,6 +47,7 @@ export default function MainSite() {
 
   const displayed = useMemo(() => {
     let list = showSaved ? enriched.filter(p => savedIds.includes(p.id)) : enriched
+    if (activeCategory) list = list.filter(p => p.category === activeCategory)
     if (filters.size)   list = list.filter(p => p.size === filters.size)
     if (filters.color)  list = list.filter(p => p.color === filters.color)
     if (filters.brand)  list = list.filter(p => p.brand === filters.brand)
@@ -56,7 +58,7 @@ export default function MainSite() {
     if (sortBy === 'price-asc')  list = [...list].sort((a,b) => a.pricePickup - b.pricePickup)
     if (sortBy === 'price-desc') list = [...list].sort((a,b) => b.pricePickup - a.pricePickup)
     return list
-  }, [enriched, filters, sortBy, savedIds, showSaved])
+  }, [enriched, filters, sortBy, savedIds, showSaved, activeCategory])
 
   return (
     <div className="min-h-screen bg-cream-100 font-heebo" dir="rtl">
@@ -64,10 +66,12 @@ export default function MainSite() {
         savedCount={savedIds.length}
         showSaved={showSaved}
         onToggleSaved={() => setShowSaved(v => !v)}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
       />
       <Hero />
       <main id="items">
-        <div className="sm:sticky sm:top-32 z-30">
+        <div className="sm:sticky sm:top-[88px] z-30">
           <FilterBar
             filters={filters}
             setFilters={setFilters}

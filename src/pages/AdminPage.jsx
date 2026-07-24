@@ -7,14 +7,14 @@ import {
 import { useProducts } from '../hooks/useProducts'
 import { useContent } from '../hooks/useContent'
 import { useOrders } from '../hooks/useOrders'
-import { SIZES, BRANDS, SEASONS, STYLES, COLORS } from '../data/products'
+import { SIZES, BRANDS, SEASONS, STYLES, COLORS, CATEGORIES } from '../data/products'
 
 // ── Change this to your own password ──────────────────────────────
 const ADMIN_PASSWORD = 'yael1234'
 // ──────────────────────────────────────────────────────────────────
 
 const EMPTY = {
-  name: '', type: '', size: '', fabric: '', brand: '',
+  name: '', category: 'בגדים', type: '', size: '', fabric: '', brand: '',
   color: '', colorHex: '#C4A882', style: '', condition: '',
   pricePickup: '', priceDelivery: '', season: '', description: '',
   images: [''],
@@ -64,6 +64,27 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
 
   return (
     <form onSubmit={submit} dir="rtl" className="space-y-4">
+      {/* Category selector */}
+      <div>
+        <Label>קטגוריה *</Label>
+        <div className="flex gap-2 flex-wrap">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => set('category', cat)}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                f.category === cat
+                  ? 'bg-charcoal text-cream-100 border-charcoal'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-taupe-400'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label>שם הפריט *</Label>
