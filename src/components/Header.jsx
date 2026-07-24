@@ -1,5 +1,4 @@
-import { Heart } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Heart, ChevronDown } from 'lucide-react'
 
 const NAV_TABS = ['בגדים', 'נעליים', 'אקססוריז', 'תיקים', 'צור קשר']
 
@@ -17,7 +16,7 @@ export default function Header({ savedCount, showSaved, onToggleSaved, activeCat
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-cream-100/95 backdrop-blur-sm border-b border-cream-300">
+    <header className="sticky top-0 z-40 bg-cream-100/95 backdrop-blur-sm">
 
       {/* Top row: saved + title + placeholder */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
@@ -48,19 +47,20 @@ export default function Header({ savedCount, showSaved, onToggleSaved, activeCat
       </div>
 
       {/* Category tabs row */}
-      <div className="border-t border-cream-300">
+      <div>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-center overflow-x-auto">
           {NAV_TABS.map(tab => (
             <button
               key={tab}
               onClick={() => handleTab(tab)}
-              className={`shrink-0 px-4 py-2.5 text-sm font-medium transition-colors duration-200 border-b-2 ${
+              className={`shrink-0 flex items-center gap-1 px-4 py-2.5 text-sm font-medium transition-colors duration-200 border-b-2 ${
                 activeCategory === tab
                   ? 'border-charcoal text-charcoal'
                   : 'border-transparent text-warm-gray hover:text-charcoal'
               }`}
             >
               {tab}
+              <ChevronDown className="w-3 h-3 opacity-50" />
             </button>
           ))}
         </div>

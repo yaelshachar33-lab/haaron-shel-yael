@@ -9,7 +9,7 @@ export default function Hero() {
   const { products } = useProducts()
 
   return (
-    <section id="home" className="pt-5 sm:pt-6">
+    <section id="home" className="pt-8 sm:pt-10">
 
       {/* ── Banner ── */}
       <div className="relative w-full h-[55vh] sm:h-[65vh] md:h-[75vh] overflow-hidden bg-cream-200">
