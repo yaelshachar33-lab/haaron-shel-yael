@@ -28,6 +28,12 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
   const [sent, setSent] = useState(false)
   const [sendError, setSendError] = useState(false)
 
+  const [showPickupForm, setShowPickupForm] = useState(false)
+  const [pickupData, setPickupData] = useState({ firstName: '', lastName: '', paymentRef: '' })
+  const [pickupSending, setPickupSending] = useState(false)
+  const [pickupSent, setPickupSent] = useState(false)
+  const [pickupError, setPickupError] = useState(false)
+
   const prev = useCallback(() => setActiveImg(i => Math.max(0, i - 1)), [])
   const next = useCallback(() => setActiveImg(i => Math.min(product.images.length - 1, i + 1)), [product.images.length])
 
@@ -37,7 +43,48 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
     setSent(false)
     setSendError(false)
     setFormData({ firstName: '', lastName: '', address: '', paymentRef: '' })
+    setShowPickupForm(false)
+    setPickupSent(false)
+    setPickupError(false)
+    setPickupData({ firstName: '', lastName: '', paymentRef: '' })
   }, [product.id])
+
+  const handlePickupSubmit = async (e) => {
+    e.preventDefault()
+    setPickupSending(true)
+    setPickupError(false)
+    try {
+      await emailjs.send(
+        EJ_SERVICE,
+        EJ_TEMPLATE,
+        {
+          product_name: product.name,
+          price:        product.pricePickup,
+          first_name:   pickupData.firstName,
+          last_name:    pickupData.lastName,
+          address:      'איסוף עצמי – יתואם מראש',
+          payment_ref:  pickupData.paymentRef,
+        },
+        { publicKey: EJ_KEY }
+      )
+      await addDoc(collection(db, 'orders'), {
+        firstName:    pickupData.firstName,
+        lastName:     pickupData.lastName,
+        address:      'איסוף עצמי',
+        paymentRef:   pickupData.paymentRef,
+        productName:  product.name,
+        price:        product.pricePickup,
+        deliveryType: 'איסוף עצמי',
+        orderDate:    new Date().toISOString(),
+        status:       'הוזמן',
+      })
+      setPickupSent(true)
+    } catch (err) {
+      setPickupError(err?.text || err?.message || 'שגיאה לא ידועה')
+    } finally {
+      setPickupSending(false)
+    }
+  }
 
   const handleDeliverySubmit = async (e) => {
     e.preventDefault()
@@ -305,6 +352,62 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
                   <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
                   <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם</p>
+                </div>
+              )}
+
+              {/* Pickup order form */}
+              <button
+                onClick={() => { setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false) }}
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+              >
+                <Package className="w-4 h-4" />
+                הזמנה עם איסוף עצמי
+              </button>
+
+              {showPickupForm && !pickupSent && (
+                <form onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
+                  <p className="text-xs text-warm-gray text-center mb-2">איסוף עצמי יש לתאם מראש ב-WhatsApp</p>
+                  <div className="flex gap-2">
+                    <input
+                      required
+                      placeholder="שם פרטי"
+                      value={pickupData.firstName}
+                      onChange={e => setPickupData(p => ({ ...p, firstName: e.target.value }))}
+                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                    />
+                    <input
+                      required
+                      placeholder="שם משפחה"
+                      value={pickupData.lastName}
+                      onChange={e => setPickupData(p => ({ ...p, lastName: e.target.value }))}
+                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                    />
+                  </div>
+                  <input
+                    required
+                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות (ביט/פייבוקס)"
+                    value={pickupData.paymentRef}
+                    onChange={e => setPickupData(p => ({ ...p, paymentRef: e.target.value }))}
+                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                  />
+                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.pricePickup}</span></div>
+                  {pickupError && <p className="text-xs text-red-500 text-center">שגיאה: {pickupError}</p>}
+                  <button
+                    type="submit"
+                    disabled={pickupSending}
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60"
+                  >
+                    <Send className="w-4 h-4" />
+                    {pickupSending ? 'שולחת...' : 'שלחי הזמנה'}
+                  </button>
+                </form>
+              )}
+
+              {pickupSent && (
+                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
+                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
+                  <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם לתיאום</p>
                 </div>
               )}
 
