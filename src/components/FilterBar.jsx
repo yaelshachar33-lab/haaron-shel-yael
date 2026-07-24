@@ -43,7 +43,10 @@ export default function FilterBar({ filters, setFilters, sortBy, setSortBy, defa
   ].filter(Boolean).length
 
   return (
-    <div className={`${activeCount === 0 ? 'sticky top-[65px]' : 'relative'} z-30 bg-cream-100/95 backdrop-blur-sm border-b border-cream-300`}>
+    <div
+      className="z-30 bg-cream-100/95 backdrop-blur-sm border-b border-cream-300"
+      style={ activeCount === 0 ? { position: 'sticky', top: '65px' } : { position: 'relative' } }
+    >
 
       {/* Control row */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
