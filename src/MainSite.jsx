@@ -7,6 +7,7 @@ import ProductModal from './components/ProductModal'
 import Footer from './components/Footer'
 import { useProducts } from './hooks/useProducts'
 import { WHATSAPP_NUMBER } from './data/products'
+import ChatWidget from './components/ChatWidget'
 
 function isJustLanded(dateAdded) {
   const diff = (Date.now() - new Date(dateAdded).getTime()) / (1000 * 60 * 60 * 24)
@@ -89,6 +90,7 @@ export default function MainSite() {
         />
       </main>
       <Footer />
+      <ChatWidget />
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}
