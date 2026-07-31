@@ -4,14 +4,12 @@ import {
   Plus, Edit2, Trash2, LogOut, Eye, Save, X,
   Image as ImageIcon, ChevronDown, Package, FileText,
 } from 'lucide-react'
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../firebase'
 import { useProducts } from '../hooks/useProducts'
 import { useContent } from '../hooks/useContent'
 import { useOrders } from '../hooks/useOrders'
 import { SIZES, BRANDS, SEASONS, STYLES, COLORS, CATEGORIES } from '../data/products'
-
-// ── Change this to your own password ──────────────────────────────
-const ADMIN_PASSWORD = 'yael1234'
-// ──────────────────────────────────────────────────────────────────
 
 const EMPTY = {
   name: '', category: 'בגדים', type: '', size: '', fabric: '', brand: '',
@@ -233,13 +231,24 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
 
 /* ── Login Screen ── */
 function LoginScreen({ onLogin }) {
-  const [pw, setPw]     = useState('')
-  const [err, setErr]   = useState(false)
+  const [email, setEmail] = useState('')
+  const [pw, setPw]       = useState('')
+  const [err, setErr]     = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    if (pw === ADMIN_PASSWORD) { onLogin() }
-    else { setErr(true); setPw('') }
+    setLoading(true)
+    setErr('')
+    try {
+      await signInWithEmailAndPassword(auth, email, pw)
+      onLogin()
+    } catch {
+      setErr('אימייל או סיסמה שגויים')
+      setPw('')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -251,18 +260,24 @@ function LoginScreen({ onLogin }) {
         </div>
         <form onSubmit={submit} className="bg-white rounded-3xl shadow-sm p-8 space-y-4">
           <div>
+            <Label>אימייל</Label>
+            <input
+              type="email" value={email} onChange={e => setEmail(e.target.value)}
+              className={inp} placeholder="your@email.com" autoFocus required
+            />
+          </div>
+          <div>
             <Label>סיסמה</Label>
             <input
-              type="password" value={pw} onChange={e => { setPw(e.target.value); setErr(false) }}
+              type="password" value={pw} onChange={e => setPw(e.target.value)}
               className={inp + (err ? ' border-red-300' : '')}
-              placeholder="הזיני סיסמה..."
-              autoFocus
+              placeholder="הזיני סיסמה..." required
             />
-            {err && <p className="text-red-400 text-xs mt-1">סיסמה שגויה</p>}
+            {err && <p className="text-red-400 text-xs mt-1">{err}</p>}
           </div>
-          <button type="submit"
-            className="w-full bg-charcoal text-white rounded-xl py-3 text-sm font-medium hover:bg-taupe-600 transition-colors">
-            כניסה
+          <button type="submit" disabled={loading}
+            className="w-full bg-charcoal text-white rounded-xl py-3 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-50">
+            {loading ? 'מתחברת...' : 'כניסה'}
           </button>
         </form>
         <div className="text-center mt-6">
@@ -771,12 +786,22 @@ function OrdersManager() {
 export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
   const [loggedIn, setLoggedIn] = useState(false)
-  const [tab, setTab]           = useState('products') // 'products' | 'content' | 'about' | 'terms' | 'orders'
+  const [authChecked, setAuthChecked] = useState(false)
+  const [tab, setTab]           = useState('products')
   const [editing, setEditing]   = useState(null)
   const [adding, setAdding]     = useState(false)
   const [toast, setToast]       = useState('')
 
-  if (!loggedIn) return <LoginScreen onLogin={() => setLoggedIn(true)} />
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => {
+      setLoggedIn(!!user)
+      setAuthChecked(true)
+    })
+    return unsub
+  }, [])
+
+  if (!authChecked) return null
+  if (!loggedIn) return <LoginScreen onLogin={() => {}} />
 
   const showToast = (msg) => {
     setToast(msg)
@@ -820,7 +845,7 @@ export default function AdminPage() {
               <Eye className="w-4 h-4" />
               <span className="hidden sm:inline">צפייה באתר</span>
             </Link>
-            <button onClick={() => setLoggedIn(false)}
+            <button onClick={() => signOut(auth)}
               className="flex items-center gap-1.5 text-sm text-warm-gray hover:text-charcoal transition-colors">
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">יציאה</span>
