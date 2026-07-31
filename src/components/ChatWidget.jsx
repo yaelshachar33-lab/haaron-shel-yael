@@ -84,7 +84,7 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start" dir="rtl">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end" dir="rtl">
       {open && (
         <div
           className="mb-3 w-80 bg-white rounded-2xl shadow-2xl border border-cream-200 flex flex-col overflow-hidden"
@@ -154,7 +154,7 @@ export default function ChatWidget() {
       {/* Toggle button */}
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-14 h-14 bg-charcoal text-cream-100 rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        className="w-14 h-14 bg-rose-900 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
         aria-label={open ? "סגרי צ'אט" : "פתחי צ'אט"}
       >
         {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
