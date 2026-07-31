@@ -808,16 +808,24 @@ export default function AdminPage() {
     setTimeout(() => setToast(''), 2500)
   }
 
-  const handleAdd = (data) => {
-    addProduct(data)
-    setAdding(false)
-    showToast('הפריט נוסף בהצלחה ✓')
+  const handleAdd = async (data) => {
+    try {
+      await addProduct(data)
+      setAdding(false)
+      showToast('הפריט נוסף בהצלחה ✓')
+    } catch {
+      showToast('שגיאה בשמירה – בדקי חיבור אינטרנט')
+    }
   }
 
-  const handleUpdate = (data) => {
-    updateProduct(editing.id, data)
-    setEditing(null)
-    showToast('הפריט עודכן בהצלחה ✓')
+  const handleUpdate = async (data) => {
+    try {
+      await updateProduct(editing.id, data)
+      setEditing(null)
+      showToast('הפריט עודכן בהצלחה ✓')
+    } catch {
+      showToast('שגיאה בשמירה – בדקי חיבור אינטרנט')
+    }
   }
 
   const handleDelete = (id, name) => {
