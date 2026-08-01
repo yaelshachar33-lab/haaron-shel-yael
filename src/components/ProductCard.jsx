@@ -40,6 +40,13 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
           </div>
         )}
 
+        {/* מבוקש badge */}
+        {(product.savedCount || 0) >= 3 && !((Date.now() - new Date(product.dateAdded).getTime()) / 86400000 <= 3) && (
+          <div className="absolute top-3 right-3 bg-rose-500 text-white text-[11px] px-3 py-1 rounded-full font-medium tracking-wide z-10">
+            🔥 מבוקש
+          </div>
+        )}
+
         {/* Save button */}
         <button
           onClick={e => { e.stopPropagation(); onToggleSave(product.id) }}

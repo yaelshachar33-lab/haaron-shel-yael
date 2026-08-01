@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { db } from '../firebase'
 import {
-  collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query
+  collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query, increment
 } from 'firebase/firestore'
 import { products as defaultProducts } from '../data/products'
 
@@ -50,5 +50,12 @@ export function useProducts() {
     setProducts(prev => prev.filter(p => p.id !== id))
   }
 
-  return { products, loading, addProduct, updateProduct, deleteProduct }
+  const updateSavedCount = async (id, delta) => {
+    try {
+      await updateDoc(doc(db, 'products', String(id)), { savedCount: increment(delta) })
+      setProducts(prev => prev.map(p => p.id === id ? { ...p, savedCount: (p.savedCount || 0) + delta } : p))
+    } catch {}
+  }
+
+  return { products, loading, addProduct, updateProduct, deleteProduct, updateSavedCount }
 }

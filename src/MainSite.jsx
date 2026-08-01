@@ -19,7 +19,7 @@ const DEFAULT_FILTERS = {
 }
 
 export default function MainSite() {
-  const { products } = useProducts()
+  const { products, updateSavedCount } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [filters, setFilters]     = useState(DEFAULT_FILTERS)
   const [sortBy, setSortBy]       = useState('newest')
@@ -38,8 +38,11 @@ export default function MainSite() {
     return () => { document.body.style.overflow = '' }
   }, [selectedProduct])
 
-  const toggleSave = (id) =>
-    setSavedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  const toggleSave = (id) => {
+    const isCurrentlySaved = savedIds.includes(id)
+    setSavedIds(prev => isCurrentlySaved ? prev.filter(x => x !== id) : [...prev, id])
+    updateSavedCount(id, isCurrentlySaved ? -1 : 1)
+  }
 
   const enriched = useMemo(() =>
     products.map(p => ({ ...p, isJustLanded: isJustLanded(p.dateAdded) })),
