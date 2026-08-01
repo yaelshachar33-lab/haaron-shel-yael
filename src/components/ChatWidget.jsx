@@ -30,16 +30,25 @@ ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
 }
 
 export default function ChatWidget() {
+  const INITIAL_MSG = { role: 'assistant', content: 'היי! אני כאן לעזור 😊 יש שאלות על הפריטים, המשלוחים או כל דבר אחר?' }
+
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'היי! אני כאן לעזור 😊 יש שאלות על הפריטים, המשלוחים או כל דבר אחר?' }
-  ])
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chatHistory')
+      return saved ? JSON.parse(saved) : [INITIAL_MSG]
+    } catch { return [INITIAL_MSG] }
+  })
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
   const { products } = useProducts()
   const { content } = useContent()
+
+  useEffect(() => {
+    try { localStorage.setItem('chatHistory', JSON.stringify(messages)) } catch {}
+  }, [messages])
 
   useEffect(() => {
     if (open) {
