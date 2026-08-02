@@ -17,8 +17,8 @@ function buildSiteContext(products, content) {
 
   return `פרטי האתר:
 שם: הארון של יעל
-טלפון/ביט: ${content.phone || '0524028228'}
 אינסטגרם: ${content.instagram || '@haaron_shel_yael'}
+ליצירת קשר: דרך עמוד "צור קשר" באתר בלבד — אל תשתפי מספר טלפון בשיחה
 
 פריטים זמינים (${available.length} פריטים):
 ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
