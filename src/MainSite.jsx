@@ -19,7 +19,7 @@ const DEFAULT_FILTERS = {
 }
 
 export default function MainSite() {
-  const { products, updateSavedCount } = useProducts()
+  const { products, updateSavedCount, updateProduct } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [filters, setFilters]     = useState(DEFAULT_FILTERS)
   const [sortBy, setSortBy]       = useState('newest')
@@ -101,6 +101,7 @@ export default function MainSite() {
           onClose={() => setSelectedProduct(null)}
           onToggleSave={() => toggleSave(selectedProduct.id)}
           whatsappNumber={WHATSAPP_NUMBER}
+          onSold={(id) => updateProduct(id, { sold: true })}
         />
       )}
     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { db } from '../firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'
 
 const EJ_SERVICE  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || 'service_iu828sa'
 const EJ_TEMPLATE = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_3j8cm77'
@@ -78,6 +78,8 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         orderDate:    new Date().toISOString(),
         status:       'הוזמן',
       })
+      await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
+      onSold?.(product.id)
       setPickupSent(true)
     } catch (err) {
       setPickupError(err?.text || err?.message || 'שגיאה לא ידועה')
@@ -114,6 +116,8 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         orderDate:   new Date().toISOString(),
         status:      'הוזמן',
       })
+      await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
+      onSold?.(product.id)
       setSent(true)
     } catch (err) {
       setSendError(err?.text || err?.message || JSON.stringify(err) || 'שגיאה לא ידועה')
