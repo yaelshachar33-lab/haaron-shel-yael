@@ -39,7 +39,7 @@ ${siteContext}
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-sonnet-4-5',
         max_tokens: 400,
         system: systemPrompt,
         messages,
