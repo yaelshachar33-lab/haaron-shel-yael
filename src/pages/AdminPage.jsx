@@ -9,7 +9,7 @@ import { auth } from '../firebase'
 import { useProducts } from '../hooks/useProducts'
 import { useContent } from '../hooks/useContent'
 import { useOrders } from '../hooks/useOrders'
-import { SIZES, BRANDS, SEASONS, STYLES, COLORS, CATEGORIES } from '../data/products'
+import { SIZES, BRANDS, SEASONS, STYLES, COLORS, CATEGORIES, TYPES } from '../data/products'
 
 const EMPTY = {
   name: '', category: 'בגדים', type: '', size: '', fabric: '', brand: '',
@@ -89,11 +89,7 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
           <input required value={f.name} onChange={e => set('name', e.target.value)}
             className={inp} placeholder="שמלת מידי פרחונית" />
         </div>
-        <div>
-          <Label>סוג פריט *</Label>
-          <input required value={f.type} onChange={e => set('type', e.target.value)}
-            className={inp} placeholder="שמלה / חצאית / חולצה..." />
-        </div>
+        <SelectField label="סוג פריט *" k="type" options={TYPES} />
 
         <SelectField label="מידה *"  k="size"   options={SIZES} />
         <SelectField label="עונה"    k="season" options={SEASONS} />

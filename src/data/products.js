@@ -255,6 +255,7 @@ export const products = [
 
 export const CATEGORIES = ['בגדים', 'נעליים', 'אקססוריז', 'תיקים']
 
+export const TYPES    = ['שמלה', 'חצאית', 'טופ', 'חולצה', 'מכנסיים', "ג'ינס", "ז'קט", 'בלייזר', 'מעיל', 'קרדיגן', 'סוודר', 'שורט', 'קומבינזון', 'אוברול', 'תיק', 'נעליים', 'אביזר']
 export const SIZES    = ['XS', 'S', 'M', 'L', 'XL', '39', '40', '41']
 export const BRANDS   = ['Zara', 'Mango', 'H&M', "Levi's", 'Pull&Bear']
 export const SEASONS  = ['קיץ', 'חורף', 'אביב-סתיו', 'חורף-אביב', 'כל העונות']
