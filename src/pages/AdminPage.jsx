@@ -18,6 +18,16 @@ const EMPTY = {
   images: [''],
 }
 
+const COLOR_HEX_MAP = {
+  'לבן': '#FFFFFF', 'שחור': '#1A1A1A', 'אפור': '#808080', 'אפור בהיר': '#D3D3D3',
+  'אדום': '#E53935', 'ורוד': '#F48FB1', 'ורוד בהיר': '#FCE4EC', 'פוקסיה': '#E91E8C',
+  'כתום': '#FF6F00', 'צהוב': '#FDD835', 'ירוק': '#43A047', 'ירוק זית': '#8B9A46',
+  'כחול': '#1E88E5', 'כחול כהה': '#0D47A1', 'תכלת': '#80D8FF', 'נייבי': '#1A237E',
+  'סגול': '#8E24AA', 'סגול בהיר': '#CE93D8', 'בורדו': '#880E4F', 'יין': '#6D1B2E',
+  'חום': '#6D4C41', 'בז\'': '#D4B896', 'קרם': '#FFF8E7', 'קאמל': '#C19A6B',
+  'זהב': '#FFD700', 'כסף': '#C0C0C0', 'מולטי': '#E91E63',
+}
+
 /* ── Small helpers ── */
 function Label({ children }) {
   return <label className="block text-xs font-semibold text-gray-500 mb-1 tracking-wide">{children}</label>
@@ -110,7 +120,10 @@ function ProductForm({ initial, onSave, onCancel, existingBrands = [] }) {
         <div>
           <Label>צבע</Label>
           <div className="flex gap-2">
-            <input value={f.color} onChange={e => set('color', e.target.value)}
+            <input value={f.color} onChange={e => {
+                set('color', e.target.value)
+                if (COLOR_HEX_MAP[e.target.value]) set('colorHex', COLOR_HEX_MAP[e.target.value])
+              }}
               list="colors-list" className={inp + ' flex-1'} placeholder="לבן, שחור..." />
             <datalist id="colors-list">{COLORS.map(c => <option key={c} value={c} />)}</datalist>
             <input type="color" value={f.colorHex} onChange={e => set('colorHex', e.target.value)}
