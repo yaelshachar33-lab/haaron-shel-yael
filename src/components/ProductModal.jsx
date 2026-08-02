@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle } from 'lucide-react'
+import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle, ZoomIn } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { db } from '../firebase'
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'
@@ -18,6 +18,46 @@ const DETAIL_FIELDS = [
   ['season',    'עונה'],
   ['condition', 'מצב'],
 ]
+
+function ZoomableImage({ src, alt }) {
+  const [zoomed, setZoomed] = useState(false)
+  const [origin, setOrigin] = useState('50% 50%')
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1)
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1)
+    setOrigin(`${x}% ${y}%`)
+  }
+
+  return (
+    <div
+      className="w-full h-full overflow-hidden cursor-zoom-in"
+      onMouseEnter={() => setZoomed(true)}
+      onMouseLeave={() => setZoomed(false)}
+      onMouseMove={handleMouseMove}
+    >
+      <img
+        key={src}
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover animate-fade-in"
+        style={{
+          transform: zoomed ? 'scale(2.5)' : 'scale(1)',
+          transformOrigin: origin,
+          transition: zoomed ? 'transform-origin 0s' : 'transform 0.3s ease',
+        }}
+        draggable={false}
+      />
+      {!zoomed && (
+        <div className="absolute bottom-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 pointer-events-none">
+          <ZoomIn className="w-3 h-3" />
+          <span>העבירי עכבר להגדלה</span>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function ProductModal({ product, isSaved, onClose, onToggleSave, whatsappNumber }) {
   const [activeImg, setActiveImg] = useState(0)
@@ -180,12 +220,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           {/* ── Left: images ── */}
           <div className="sm:w-[45%] shrink-0 bg-cream-200">
             <div className="relative aspect-[3/4] overflow-hidden">
-              <img
-                key={activeImg}
-                src={product.images[activeImg]}
-                alt={`${product.name} – תמונה ${activeImg + 1}`}
-                className="w-full h-full object-cover animate-fade-in"
-              />
+              <ZoomableImage src={product.images[activeImg]} alt={`${product.name} – תמונה ${activeImg + 1}`} />
 
               {((Date.now() - new Date(product.dateAdded).getTime()) / 86400000) <= 3 && (
                 <div className="absolute top-4 right-4 bg-charcoal text-cream-100 text-xs px-3 py-1.5 rounded-full font-medium">
