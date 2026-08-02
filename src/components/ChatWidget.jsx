@@ -9,7 +9,7 @@ function buildSiteContext(products, content) {
     const price = p.discount > 0
       ? `₪${Math.round(p.pricePickup * (1 - p.discount / 100))} (מחיר מקורי ₪${p.pricePickup}, הנחה ${p.discount}%)`
       : `₪${p.pricePickup}`
-    return `- ${p.name} | קטגוריה: ${p.category || 'כללי'} | מידה: ${p.size} | מחיר: ${price}${p.brand ? ` | מותג: ${p.brand}` : ''}`
+    return `- ${p.name} | קטגוריה: ${p.category || 'כללי'} | מידה: ${p.size} | מחיר: ${price}${p.brand ? ` | מותג: ${p.brand}` : ''}${p.color ? ` | צבע: ${p.color}` : ''}${p.description ? ` | תיאור: ${p.description}` : ''}`
   })
 
   const getTermText = (title) =>
