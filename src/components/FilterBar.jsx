@@ -38,7 +38,7 @@ export default function FilterBar({ filters, setFilters, sortBy, setSortBy, defa
   const unique = (key) => [...new Set(products.map(p => p[key]).filter(Boolean))].sort()
 
   const activeCount = [
-    filters.size, filters.color, filters.brand, filters.season, filters.style,
+    filters.size, filters.color, filters.brand, filters.season, filters.type,
     filters.maxPrice < 500 ? 'price' : '',
   ].filter(Boolean).length
 
@@ -86,7 +86,7 @@ export default function FilterBar({ filters, setFilters, sortBy, setSortBy, defa
               <Select label="צבע"   value={filters.color}  onChange={v => set('color', v)}  options={unique('color')} />
               <Select label="מותג"  value={filters.brand}  onChange={v => set('brand', v)}  options={unique('brand').filter(b => !BRANDS_EXCLUDE.includes(b))} />
               <Select label="עונה"  value={filters.season} onChange={v => set('season', v)} options={unique('season')} />
-              <Select label="סגנון" value={filters.style}  onChange={v => set('style', v)}  options={unique('style').filter(s => !STYLES_EXCLUDE.includes(s))} />
+              <Select label="סוג פריט" value={filters.type} onChange={v => set('type', v)} options={unique('type')} />
 
               {/* Price range */}
               <div>

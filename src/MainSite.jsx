@@ -15,7 +15,7 @@ function isJustLanded(dateAdded) {
 }
 
 const DEFAULT_FILTERS = {
-  size: '', color: '', brand: '', season: '', style: '', maxPrice: 500,
+  size: '', color: '', brand: '', season: '', type: '', maxPrice: 500,
 }
 
 export default function MainSite() {
@@ -56,7 +56,7 @@ export default function MainSite() {
     if (filters.color)  list = list.filter(p => p.color === filters.color)
     if (filters.brand)  list = list.filter(p => p.brand === filters.brand)
     if (filters.season) list = list.filter(p => p.season === filters.season)
-    if (filters.style)  list = list.filter(p => p.style === filters.style)
+    if (filters.type)   list = list.filter(p => p.type === filters.type)
     list = list.filter(p => (p.discount > 0 ? Math.round(p.pricePickup * (1 - p.discount / 100)) : p.pricePickup) <= filters.maxPrice)
     if (sortBy === 'newest')     list = [...list].sort((a,b) => new Date(b.dateAdded) - new Date(a.dateAdded))
     if (sortBy === 'price-asc')  list = [...list].sort((a,b) => a.pricePickup - b.pricePickup)
