@@ -5,11 +5,17 @@ import { useContent } from '../hooks/useContent'
 
 function buildSiteContext(products, content) {
   const available = products.filter(p => !p.sold)
-  const productLines = available.map(p => {
+  const productLines = available.map((p, i) => {
     const price = p.discount > 0
-      ? `₪${Math.round(p.pricePickup * (1 - p.discount / 100))} (מחיר מקורי ₪${p.pricePickup}, הנחה ${p.discount}%)`
+      ? `₪${Math.round(p.pricePickup * (1 - p.discount / 100))} (מקורי ₪${p.pricePickup}, הנחה ${p.discount}%)`
       : `₪${p.pricePickup}`
-    return `- ${p.name} | קטגוריה: ${p.category || 'כללי'} | מידה: ${p.size} | מחיר: ${price}${p.brand ? ` | מותג: ${p.brand}` : ''}${p.color ? ` | צבע: ${p.color}` : ''}${p.description ? ` | תיאור: ${p.description}` : ''}`
+    return [
+      `פריט ${i + 1}: ${p.name}`,
+      `  קטגוריה: ${p.category || 'כללי'} | מידה: ${p.size} | מחיר: ${price}`,
+      p.brand       ? `  מותג: ${p.brand}` : '',
+      p.color       ? `  צבע: ${p.color}` : '',
+      p.description ? `  תיאור: ${p.description}` : '',
+    ].filter(Boolean).join('\n')
   })
 
   const getTermText = (title) =>
