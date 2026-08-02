@@ -104,7 +104,18 @@ export default function ProductCard({ product, isSaved, onProductClick, onToggle
           </span>
         </div>
 
-        <p className="text-xs text-warm-gray mb-3">{product.brand}</p>
+        <div className="flex items-center gap-2 mb-3">
+          <p className="text-xs text-warm-gray">{product.brand}</p>
+          {product.color && (
+            <div className="flex items-center gap-1">
+              <div
+                className="w-3 h-3 rounded-full border border-cream-300 shrink-0"
+                style={{ backgroundColor: product.colorHex || '#C4A882' }}
+              />
+              <span className="text-xs text-warm-gray">{product.color}</span>
+            </div>
+          )}
+        </div>
 
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 flex-wrap">
