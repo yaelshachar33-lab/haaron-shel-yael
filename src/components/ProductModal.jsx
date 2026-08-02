@@ -78,8 +78,10 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         orderDate:    new Date().toISOString(),
         status:       'הוזמן',
       })
-      await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
-      onSold?.(product.id)
+      try {
+        await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
+        onSold?.(product.id)
+      } catch {}
       setPickupSent(true)
     } catch (err) {
       setPickupError(err?.text || err?.message || 'שגיאה לא ידועה')
@@ -116,8 +118,10 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         orderDate:   new Date().toISOString(),
         status:      'הוזמן',
       })
-      await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
-      onSold?.(product.id)
+      try {
+        await updateDoc(doc(db, 'products', String(product.id)), { sold: true })
+        onSold?.(product.id)
+      } catch {}
       setSent(true)
     } catch (err) {
       setSendError(err?.text || err?.message || JSON.stringify(err) || 'שגיאה לא ידועה')
