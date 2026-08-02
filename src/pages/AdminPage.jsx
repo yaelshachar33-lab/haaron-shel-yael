@@ -996,6 +996,7 @@ export default function AdminPage() {
                 </div>
                 <div className="max-h-[calc(100vh-200px)] overflow-y-auto pl-1">
                   <ProductForm
+                    key={editing?.id || 'new'}
                     initial={editing || null}
                     onSave={adding ? handleAdd : handleUpdate}
                     onCancel={() => { setAdding(false); setEditing(null) }}
