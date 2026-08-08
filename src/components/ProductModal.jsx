@@ -22,6 +22,7 @@ const DETAIL_FIELDS = [
 function ZoomableImage({ src, alt }) {
   const [zoomed, setZoomed] = useState(false)
   const [origin, setOrigin] = useState('50% 50%')
+  const [lightbox, setLightbox] = useState(false)
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -31,31 +32,65 @@ function ZoomableImage({ src, alt }) {
   }
 
   return (
-    <div
-      className="w-full h-full overflow-hidden cursor-zoom-in"
-      onMouseEnter={() => setZoomed(true)}
-      onMouseLeave={() => setZoomed(false)}
-      onMouseMove={handleMouseMove}
-    >
-      <img
-        key={src}
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover animate-fade-in"
-        style={{
-          transform: zoomed ? 'scale(2.5)' : 'scale(1)',
-          transformOrigin: origin,
-          transition: zoomed ? 'transform-origin 0s' : 'transform 0.3s ease',
-        }}
-        draggable={false}
-      />
-      {!zoomed && (
+    <>
+      {/* Desktop: hover zoom */}
+      <div
+        className="hidden sm:block w-full h-full overflow-hidden cursor-zoom-in"
+        onMouseEnter={() => setZoomed(true)}
+        onMouseLeave={() => setZoomed(false)}
+        onMouseMove={handleMouseMove}
+      >
+        <img
+          key={src}
+          src={src}
+          alt={alt}
+          className="w-full h-full object-cover animate-fade-in"
+          style={{
+            transform: zoomed ? 'scale(2.5)' : 'scale(1)',
+            transformOrigin: origin,
+            transition: zoomed ? 'transform-origin 0s' : 'transform 0.3s ease',
+          }}
+          draggable={false}
+        />
+        {!zoomed && (
+          <div className="absolute bottom-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 pointer-events-none">
+            <ZoomIn className="w-3 h-3" />
+            <span>העבירי עכבר להגדלה</span>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile: tap to open fullscreen */}
+      <div
+        className="sm:hidden w-full h-full overflow-hidden cursor-zoom-in"
+        onClick={() => setLightbox(true)}
+      >
+        <img key={src} src={src} alt={alt} className="w-full h-full object-cover animate-fade-in" draggable={false} />
         <div className="absolute bottom-3 left-3 bg-black/40 text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 pointer-events-none">
           <ZoomIn className="w-3 h-3" />
-          <span>העבירי עכבר להגדלה</span>
+          <span>לחצי להגדלה</span>
+        </div>
+      </div>
+
+      {/* Lightbox overlay (mobile) */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+          onClick={() => setLightbox(false)}
+        >
+          <button className="absolute top-4 left-4 text-white bg-white/20 rounded-full p-2 z-10">
+            <X className="w-5 h-5" />
+          </button>
+          <img
+            src={src}
+            alt={alt}
+            className="max-w-full max-h-full object-contain"
+            style={{ touchAction: 'pinch-zoom' }}
+            onClick={e => e.stopPropagation()}
+          />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
