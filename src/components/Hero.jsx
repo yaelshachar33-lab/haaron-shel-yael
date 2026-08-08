@@ -45,23 +45,23 @@ export default function Hero({ onResetCategory }) {
       </div>
 
       {/* ── Story & stats ── */}
-      <div className="bg-cream-100 py-14 px-4">
+      <div className="bg-cream-100 py-7 sm:py-14 px-4">
         <div className="max-w-2xl mx-auto text-center">
 
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-4 mb-4 sm:mb-8">
             <div className="h-px w-14 bg-taupe-300" />
             <span className="text-taupe-400">✦</span>
             <div className="h-px w-14 bg-taupe-300" />
           </div>
 
-          <div id="about" className="text-warm-gray font-light leading-8 text-sm sm:text-base mb-10">
+          <div id="about" className="text-warm-gray font-light leading-7 sm:leading-8 text-sm sm:text-base mb-6 sm:mb-10">
             {content.story.map((para, i) => (
               <p key={i} className={i > 0 ? 'mt-3' : ''}>{para}</p>
             ))}
             {content.storyQuote && (
               <>
                 <p className="mt-3 text-taupe-500 font-medium">{content.storyQuote}</p>
-                <div className="flex items-center justify-center gap-4 mt-8">
+                <div className="flex items-center justify-center gap-4 mt-4 sm:mt-8">
                   <div className="h-px w-14 bg-taupe-300" />
                   <span className="text-taupe-400">✦</span>
                   <div className="h-px w-14 bg-taupe-300" />
