@@ -97,82 +97,98 @@ export default function ChatWidget() {
     }
   }
 
+  const chatPanel = (
+    <>
+      {/* Header */}
+      <div className="bg-charcoal text-cream-100 px-4 py-3 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-400 rounded-full" />
+          <span className="font-frank text-sm">הארון של יעל</span>
+        </div>
+        <button onClick={() => setOpen(false)} aria-label="סגרי צ'אט">
+          <X className="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" />
+        </button>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 text-sm">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}>
+            <div
+              className={`max-w-[82%] px-3 py-2 rounded-2xl leading-relaxed text-right ${
+                m.role === 'user'
+                  ? 'bg-cream-200 text-charcoal rounded-tr-sm'
+                  : 'bg-charcoal text-cream-100 rounded-tl-sm'
+              }`}
+            >
+              {m.content}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex justify-end">
+            <div className="bg-charcoal text-cream-100 px-3 py-2 rounded-2xl rounded-tl-sm text-xs opacity-60 flex gap-1 items-center">
+              <span className="animate-bounce" style={{ animationDelay: '0ms' }}>•</span>
+              <span className="animate-bounce" style={{ animationDelay: '150ms' }}>•</span>
+              <span className="animate-bounce" style={{ animationDelay: '300ms' }}>•</span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-cream-200 p-3 flex gap-2 shrink-0">
+        <input
+          ref={inputRef}
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
+          placeholder="כתבי הודעה..."
+          className="flex-1 text-sm bg-cream-100 rounded-xl px-3 py-2 outline-none text-right placeholder:text-warm-gray/60"
+          dir="rtl"
+        />
+        <button
+          onClick={send}
+          disabled={!input.trim() || loading}
+          className="bg-charcoal text-cream-100 rounded-xl p-2 disabled:opacity-30 hover:bg-charcoal/80 transition-colors shrink-0"
+          aria-label="שלחי"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </>
+  )
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end" dir="rtl">
+    <div dir="rtl">
+      {/* Mobile: full-screen overlay so keyboard doesn't cut it off */}
+      {open && (
+        <div className="sm:hidden fixed inset-0 z-[100] bg-white flex flex-col">
+          {chatPanel}
+        </div>
+      )}
+
+      {/* Desktop: floating widget */}
       {open && (
         <div
-          className="mb-3 w-80 bg-white rounded-2xl shadow-2xl border border-cream-200 flex flex-col overflow-hidden"
+          className="hidden sm:flex fixed bottom-24 right-6 z-50 flex-col w-80 bg-white rounded-2xl shadow-2xl border border-cream-200 overflow-hidden"
           style={{ height: '440px' }}
         >
-          {/* Header */}
-          <div className="bg-charcoal text-cream-100 px-4 py-3 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full" />
-              <span className="font-frank text-sm">הארון של יעל</span>
-            </div>
-            <button onClick={() => setOpen(false)} aria-label="סגרי צ'אט">
-              <X className="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2 text-sm">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                <div
-                  className={`max-w-[82%] px-3 py-2 rounded-2xl leading-relaxed text-right ${
-                    m.role === 'user'
-                      ? 'bg-cream-200 text-charcoal rounded-tr-sm'
-                      : 'bg-charcoal text-cream-100 rounded-tl-sm'
-                  }`}
-                >
-                  {m.content}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex justify-end">
-                <div className="bg-charcoal text-cream-100 px-3 py-2 rounded-2xl rounded-tl-sm text-xs opacity-60 flex gap-1 items-center">
-                  <span className="animate-bounce" style={{ animationDelay: '0ms' }}>•</span>
-                  <span className="animate-bounce" style={{ animationDelay: '150ms' }}>•</span>
-                  <span className="animate-bounce" style={{ animationDelay: '300ms' }}>•</span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-cream-200 p-3 flex gap-2 shrink-0">
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
-              placeholder="כתבי הודעה..."
-              className="flex-1 text-sm bg-cream-100 rounded-xl px-3 py-2 outline-none text-right placeholder:text-warm-gray/60"
-              dir="rtl"
-            />
-            <button
-              onClick={send}
-              disabled={!input.trim() || loading}
-              className="bg-charcoal text-cream-100 rounded-xl p-2 disabled:opacity-30 hover:bg-charcoal/80 transition-colors shrink-0"
-              aria-label="שלחי"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
+          {chatPanel}
         </div>
       )}
 
       {/* Toggle button */}
-      <button
-        onClick={() => setOpen(v => !v)}
-        className="w-14 h-14 bg-rose-900 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-        aria-label={open ? "סגרי צ'אט" : "פתחי צ'אט"}
-      >
-        {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-      </button>
+      <div className="fixed bottom-6 right-6 z-[101]">
+        <button
+          onClick={() => setOpen(v => !v)}
+          className="w-14 h-14 bg-rose-900 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          aria-label={open ? "סגרי צ'אט" : "פתחי צ'אט"}
+        >
+          {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        </button>
+      </div>
     </div>
   )
 }
