@@ -73,7 +73,7 @@ export default function MainSite() {
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
-      <Hero />
+      <Hero onResetCategory={() => setActiveCategory('')} />
       <main id="items">
         <div className="sm:sticky sm:top-[88px] z-30">
           <FilterBar

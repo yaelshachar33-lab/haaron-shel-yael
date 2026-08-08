@@ -4,7 +4,7 @@ import { useProducts } from '../hooks/useProducts'
 // החליפי את הנתיב לסרטון שלך לאחר שהעלית לתיקיית public/
 const BANNER_VIDEO = '/banner-video.mp4.mp4'
 
-export default function Hero() {
+export default function Hero({ onResetCategory }) {
   const { content } = useContent()
   const { products } = useProducts()
 
@@ -32,7 +32,7 @@ export default function Hero() {
             {content.bannerSubtitle}
           </p>
           <button
-            onClick={() => document.getElementById('items')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => { onResetCategory?.(); document.getElementById('items')?.scrollIntoView({ behavior: 'smooth' }) }}
             className="inline-flex items-center justify-center gap-2 bg-white text-charcoal px-8 py-3.5 rounded-full text-base font-medium tracking-wide transition-all duration-300 hover:bg-cream-200 hover:shadow-lg shadow-md"
           >
             {content.bannerCta}
