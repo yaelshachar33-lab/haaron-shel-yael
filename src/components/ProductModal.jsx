@@ -188,6 +188,8 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
   const [pickupSending, setPickupSending] = useState(false)
   const [pickupSent, setPickupSent] = useState(false)
   const [pickupError, setPickupError] = useState(false)
+  const pickupFormRef = useRef(null)
+  const deliveryFormRef = useRef(null)
 
   const prev = useCallback(() => setActiveImg(i => Math.max(0, i - 1)), [])
   const next = useCallback(() => setActiveImg(i => Math.min(product.images.length - 1, i + 1)), [product.images.length])
@@ -484,7 +486,11 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               {/* Delivery order */}
               {!product.sold && (
                 <button
-                  onClick={() => { setShowDeliveryForm(p => !p); setSent(false); setSendError(false) }}
+                  onClick={() => {
+                    const opening = !showDeliveryForm
+                    setShowDeliveryForm(p => !p); setSent(false); setSendError(false)
+                    if (opening) setTimeout(() => deliveryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                  }}
                   className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
                 >
                   <span className="flex items-center gap-2">
@@ -498,7 +504,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               )}
 
               {!product.sold && showDeliveryForm && !sent && (
-                <form onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
+                <form ref={deliveryFormRef} onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
                   {/* Payment instructions */}
                   <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
                     <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
@@ -566,7 +572,11 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               {/* Pickup order */}
               {!product.sold && (
                 <button
-                  onClick={() => { setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false) }}
+                  onClick={() => {
+                    const opening = !showPickupForm
+                    setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false)
+                    if (opening) setTimeout(() => pickupFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                  }}
                   className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
                 >
                   <span className="flex items-center gap-2">
@@ -580,7 +590,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
               )}
 
               {showPickupForm && !pickupSent && (
-                <form onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
+                <form ref={pickupFormRef} onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
                   {/* Payment instructions */}
                   <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
                     <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
