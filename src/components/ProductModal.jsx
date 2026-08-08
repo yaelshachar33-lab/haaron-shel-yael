@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle, ZoomIn } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { db } from '../firebase'
@@ -18,6 +18,104 @@ const DETAIL_FIELDS = [
   ['season',    'עונה'],
   ['condition', 'מצב'],
 ]
+
+function MobileLightbox({ src, alt, onClose }) {
+  const [scale, setScale] = useState(1)
+  const [translate, setTranslate] = useState({ x: 0, y: 0 })
+  const touchRef = useRef({})
+
+  const getDistance = (t1, t2) =>
+    Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY)
+
+  const getMidpoint = (t1, t2) => ({
+    x: (t1.clientX + t2.clientX) / 2,
+    y: (t1.clientY + t2.clientY) / 2,
+  })
+
+  const onTouchStart = (e) => {
+    e.preventDefault()
+    const touches = e.touches
+    if (touches.length === 1) {
+      touchRef.current = { mode: 'pan', lastX: touches[0].clientX, lastY: touches[0].clientY }
+    } else if (touches.length === 2) {
+      touchRef.current = {
+        mode: 'pinch',
+        lastDist: getDistance(touches[0], touches[1]),
+        lastMid: getMidpoint(touches[0], touches[1]),
+        lastScale: scale,
+      }
+    }
+  }
+
+  const onTouchMove = (e) => {
+    e.preventDefault()
+    const touches = e.touches
+    const ref = touchRef.current
+    if (ref.mode === 'pan' && touches.length === 1) {
+      const dx = touches[0].clientX - ref.lastX
+      const dy = touches[0].clientY - ref.lastY
+      setTranslate(prev => ({ x: prev.x + dx, y: prev.y + dy }))
+      touchRef.current.lastX = touches[0].clientX
+      touchRef.current.lastY = touches[0].clientY
+    } else if (ref.mode === 'pinch' && touches.length === 2) {
+      const dist = getDistance(touches[0], touches[1])
+      const newScale = Math.min(5, Math.max(1, ref.lastScale * (dist / ref.lastDist)))
+      setScale(newScale)
+    }
+  }
+
+  const onTouchEnd = (e) => {
+    if (e.touches.length === 0 && touchRef.current.mode === 'pan') {
+      // reset pan when zoomed out to 1
+      setScale(prev => {
+        if (prev <= 1.05) { setTranslate({ x: 0, y: 0 }); return 1 }
+        return prev
+      })
+    }
+    if (e.touches.length < 2) touchRef.current.mode = 'pan'
+  }
+
+  // prevent body scroll while lightbox open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] bg-black flex items-center justify-center select-none"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      <button
+        className="absolute top-4 left-4 text-white bg-white/20 rounded-full p-2 z-10"
+        onTouchEnd={e => { e.stopPropagation(); onClose() }}
+        onClick={onClose}
+      >
+        <X className="w-5 h-5" />
+      </button>
+      <img
+        src={src}
+        alt={alt}
+        className="max-w-full max-h-full object-contain"
+        style={{
+          transform: `translate(${translate.x}px, ${translate.y}px) scale(${scale})`,
+          transformOrigin: 'center center',
+          transition: 'none',
+          userSelect: 'none',
+          pointerEvents: 'none',
+        }}
+        draggable={false}
+      />
+      {scale <= 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1.5 rounded-full pointer-events-none">
+          גררי לתנועה · צבטי להגדלה
+        </div>
+      )}
+    </div>
+  )
+}
 
 function ZoomableImage({ src, alt }) {
   const [zoomed, setZoomed] = useState(false)
@@ -60,7 +158,7 @@ function ZoomableImage({ src, alt }) {
         )}
       </div>
 
-      {/* Mobile: tap to open fullscreen */}
+      {/* Mobile: tap to open lightbox */}
       <div
         className="sm:hidden w-full h-full overflow-hidden cursor-zoom-in"
         onClick={() => setLightbox(true)}
@@ -72,24 +170,7 @@ function ZoomableImage({ src, alt }) {
         </div>
       </div>
 
-      {/* Lightbox overlay (mobile) */}
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
-          onClick={() => setLightbox(false)}
-        >
-          <button className="absolute top-4 left-4 text-white bg-white/20 rounded-full p-2 z-10">
-            <X className="w-5 h-5" />
-          </button>
-          <img
-            src={src}
-            alt={alt}
-            className="max-w-full max-h-full object-contain"
-            style={{ touchAction: 'pinch-zoom' }}
-            onClick={e => e.stopPropagation()}
-          />
-        </div>
-      )}
+      {lightbox && <MobileLightbox src={src} alt={alt} onClose={() => setLightbox(false)} />}
     </>
   )
 }
