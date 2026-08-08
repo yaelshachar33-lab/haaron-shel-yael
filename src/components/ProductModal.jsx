@@ -509,6 +509,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (כולל משלוח)
                     </p>
                   </div>
+                  <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים לביצוע ההזמנה</p>
                   <div className="flex gap-2">
                     <input
                       required
@@ -516,6 +517,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       value={formData.firstName}
                       onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
                       className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      dir="rtl"
                     />
                     <input
                       required
@@ -523,6 +525,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       value={formData.lastName}
                       onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
                       className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      dir="rtl"
                     />
                   </div>
                   <textarea
@@ -596,6 +599,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       value={pickupData.firstName}
                       onChange={e => setPickupData(p => ({ ...p, firstName: e.target.value }))}
                       className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      dir="rtl"
                     />
                     <input
                       required
@@ -603,6 +607,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       value={pickupData.lastName}
                       onChange={e => setPickupData(p => ({ ...p, lastName: e.target.value }))}
                       className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      dir="rtl"
                     />
                   </div>
                   <input
