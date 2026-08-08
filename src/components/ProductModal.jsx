@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, CreditCard, Send, CheckCircle, ZoomIn } from 'lucide-react'
+import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, Send, CheckCircle, ZoomIn } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { db } from '../firebase'
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'
@@ -177,7 +177,6 @@ function ZoomableImage({ src, alt }) {
 
 export default function ProductModal({ product, isSaved, onClose, onToggleSave, whatsappNumber }) {
   const [activeImg, setActiveImg] = useState(0)
-  const [showBit, setShowBit] = useState(false)
   const [showDeliveryForm, setShowDeliveryForm] = useState(false)
   const [formData, setFormData] = useState({ firstName: '', lastName: '', address: '', paymentRef: '' })
   const [sending, setSending] = useState(false)
@@ -482,20 +481,34 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 צרי קשר ב-WhatsApp
               </a>
 
-              {/* Delivery order form */}
+              {/* Delivery order */}
               {!product.sold && (
-              <button
-                onClick={() => { setShowDeliveryForm(p => !p); setSent(false); setSendError(false) }}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
-              >
-                <Truck className="w-4 h-4" />
-                הזמנה עם משלוח
-              </button>
+                <button
+                  onClick={() => { setShowDeliveryForm(p => !p); setSent(false); setSendError(false) }}
+                  className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+                >
+                  <span className="flex items-center gap-2">
+                    <Truck className="w-4 h-4" />
+                    הזמנה עם משלוח
+                  </span>
+                  <span className="font-semibold text-charcoal">
+                    ₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}
+                  </span>
+                </button>
               )}
 
               {!product.sold && showDeliveryForm && !sent && (
                 <form onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
-                  <p className="text-xs text-warm-gray text-center mb-2">הפריט יישלח לאחר הסדרת התשלום. יש למלא כתובת למשלוח ומספר אסמכתא לתשלום</p>
+                  {/* Payment instructions */}
+                  <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
+                    <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
+                    <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">
+                      {whatsappNumber.replace('972', '0')}
+                    </p>
+                    <p className="text-xs text-warm-gray mt-1">
+                      סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (כולל משלוח)
+                    </p>
+                  </div>
                   <div className="flex gap-2">
                     <input
                       required
@@ -522,12 +535,11 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   />
                   <input
                     required
-                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות (ביט/פייבוקס)"
+                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות"
                     value={formData.paymentRef}
                     onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
-                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span></div>
                   {sendError && <p className="text-xs text-red-500 text-center">שגיאה: {sendError}</p>}
                   <button
                     type="submit"
@@ -548,20 +560,35 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 </div>
               )}
 
-              {/* Pickup order form */}
+              {/* Pickup order */}
               {!product.sold && (
-              <button
-                onClick={() => { setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false) }}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
-              >
-                <Package className="w-4 h-4" />
-                הזמנה עם איסוף עצמי
-              </button>
+                <button
+                  onClick={() => { setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false) }}
+                  className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+                >
+                  <span className="flex items-center gap-2">
+                    <Package className="w-4 h-4" />
+                    הזמנה עם איסוף עצמי
+                  </span>
+                  <span className="font-semibold text-charcoal">
+                    ₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}
+                  </span>
+                </button>
               )}
 
               {showPickupForm && !pickupSent && (
                 <form onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
-                  <p className="text-xs text-warm-gray text-center mb-2">איסוף עצמי יש לתאם מראש ב-WhatsApp</p>
+                  {/* Payment instructions */}
+                  <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
+                    <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
+                    <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">
+                      {whatsappNumber.replace('972', '0')}
+                    </p>
+                    <p className="text-xs text-warm-gray mt-1">
+                      סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span> (איסוף עצמי)
+                    </p>
+                  </div>
+                  <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים ושלחי הזמנה. האיסוף יתואם ב-WhatsApp</p>
                   <div className="flex gap-2">
                     <input
                       required
@@ -580,12 +607,11 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   </div>
                   <input
                     required
-                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות (ביט/פייבוקס)"
+                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות"
                     value={pickupData.paymentRef}
                     onChange={e => setPickupData(p => ({ ...p, paymentRef: e.target.value }))}
                     className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                   />
-                  <div className="text-center text-xs text-warm-gray">סכום לתשלום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span></div>
                   {pickupError && <p className="text-xs text-red-500 text-center">שגיאה: {pickupError}</p>}
                   <button
                     type="submit"
@@ -603,23 +629,6 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
                   <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
                   <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם לתיאום</p>
-                </div>
-              )}
-
-              <button
-                onClick={() => setShowBit(p => !p)}
-                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
-              >
-                <CreditCard className="w-4 h-4" />
-                תשלום בביט
-              </button>
-
-              {showBit && (
-                <div className="bg-cream-200 rounded-2xl p-4 text-center space-y-1 animate-fade-in">
-                  <p className="text-xs text-warm-gray">שלחי ביט למספר</p>
-                  <p className="font-frank text-2xl text-charcoal tracking-wide">{whatsappNumber.replace('972', '0')}</p>
-                  <p className="text-xs text-warm-gray">סכום: <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span> (איסוף) או <span className="font-semibold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (משלוח)</p>
-                  <p className="text-sm text-charcoal pt-1 font-medium">לאחר התשלום שלחי לי הודעה ב-WhatsApp</p>
                 </div>
               )}
 
