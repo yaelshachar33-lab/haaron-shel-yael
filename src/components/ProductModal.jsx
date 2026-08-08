@@ -516,7 +516,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       placeholder="שם פרטי"
                       value={formData.firstName}
                       onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
-                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                       dir="rtl"
                     />
                     <input
@@ -524,7 +524,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       placeholder="שם משפחה"
                       value={formData.lastName}
                       onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
-                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                       dir="rtl"
                     />
                   </div>
@@ -598,7 +598,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       placeholder="שם פרטי"
                       value={pickupData.firstName}
                       onChange={e => setPickupData(p => ({ ...p, firstName: e.target.value }))}
-                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                       dir="rtl"
                     />
                     <input
@@ -606,7 +606,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                       placeholder="שם משפחה"
                       value={pickupData.lastName}
                       onChange={e => setPickupData(p => ({ ...p, lastName: e.target.value }))}
-                      className="flex-1 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
+                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
                       dir="rtl"
                     />
                   </div>
