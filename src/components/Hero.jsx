@@ -25,7 +25,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/20 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-10 sm:pb-14 px-4 text-center">
-          <p className="text-cream-200 text-[13px] sm:text-sm tracking-[0.4em] font-light mb-3 uppercase">
+          <p className="hidden sm:block text-cream-200 text-sm tracking-[0.4em] font-light mb-3 uppercase">
             בוטיק אישי &nbsp;·&nbsp; יד שניה &nbsp;·&nbsp; אופנה מתחדשת
           </p>
           <p className="text-cream-200 text-[19px] sm:text-2xl font-light mb-7 drop-shadow">
