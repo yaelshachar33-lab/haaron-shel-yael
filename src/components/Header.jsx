@@ -47,13 +47,13 @@ export default function Header({ savedCount, showSaved, onToggleSaved, activeCat
       </div>
 
       {/* Category tabs row */}
-      <div>
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 flex items-center justify-center overflow-x-auto">
+      <div className="overflow-x-auto scrollbar-hide">
+        <div className="flex items-center sm:justify-center min-w-max sm:min-w-0 mx-auto px-3 sm:px-6">
           {NAV_TABS.map(tab => (
             <button
               key={tab}
               onClick={() => handleTab(tab)}
-              className={`shrink-0 flex items-center gap-1 px-4 py-2.5 text-sm font-medium transition-colors duration-200 border-b-2 ${
+              className={`shrink-0 flex items-center gap-1 px-3 sm:px-4 py-2.5 text-sm font-medium transition-colors duration-200 border-b-2 ${
                 activeCategory === tab
                   ? 'border-charcoal text-charcoal'
                   : 'border-transparent text-warm-gray hover:text-charcoal'
