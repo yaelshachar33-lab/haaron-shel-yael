@@ -1,6 +1,6 @@
 import { Heart, ChevronDown } from 'lucide-react'
 
-const NAV_TABS = ['בגדים', 'נעליים', 'אקססוריז', 'תיקים', 'צור קשר']
+const NAV_TABS = ['בגדים', 'נעליים', 'אקססוריז', 'תיקים']
 
 export default function Header({ savedCount, showSaved, onToggleSaved, activeCategory, onCategoryChange }) {
 
@@ -52,7 +52,7 @@ export default function Header({ savedCount, showSaved, onToggleSaved, activeCat
           <button
             key={tab}
             onClick={() => handleTab(tab)}
-            className={`${tab === 'צור קשר' ? 'hidden sm:flex' : 'flex'} flex-1 sm:flex-none items-center justify-center gap-0.5 sm:gap-1 px-1 sm:px-4 py-2.5 text-[11px] sm:text-sm font-medium transition-colors duration-200 border-b-2 ${
+            className={`flex flex-1 sm:flex-none items-center justify-center gap-0.5 sm:gap-1 px-1 sm:px-4 py-2.5 text-[11px] sm:text-sm font-medium transition-colors duration-200 border-b-2 ${
               activeCategory === tab
                 ? 'border-charcoal text-charcoal'
                 : 'border-transparent text-warm-gray hover:text-charcoal'
