@@ -510,20 +510,20 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   {!showDeliveryForm && !showPickupForm && !sent && !pickupSent && (
                     <div className="flex gap-2">
                       <button
-                        onClick={() => { setShowDeliveryForm(true); setTimeout(() => deliveryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
-                        className="flex-1 flex flex-col items-center gap-1 py-3 px-2 bg-white border border-cream-300 rounded-xl hover:border-taupe-400 transition-colors"
-                      >
-                        <Truck className="w-4 h-4 text-warm-gray" />
-                        <span className="text-xs font-medium text-charcoal">עם משלוח</span>
-                        <span className="text-sm font-bold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span>
-                      </button>
-                      <button
                         onClick={() => { setShowPickupForm(true); setTimeout(() => pickupFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
                         className="flex-1 flex flex-col items-center gap-1 py-3 px-2 bg-white border border-cream-300 rounded-xl hover:border-taupe-400 transition-colors"
                       >
                         <Package className="w-4 h-4 text-warm-gray" />
                         <span className="text-xs font-medium text-charcoal">איסוף עצמי</span>
                         <span className="text-sm font-bold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span>
+                      </button>
+                      <button
+                        onClick={() => { setShowDeliveryForm(true); setTimeout(() => deliveryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
+                        className="flex-1 flex flex-col items-center gap-1 py-3 px-2 bg-white border border-cream-300 rounded-xl hover:border-taupe-400 transition-colors"
+                      >
+                        <Truck className="w-4 h-4 text-warm-gray" />
+                        <span className="text-xs font-medium text-charcoal">עם משלוח</span>
+                        <span className="text-sm font-bold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span>
                       </button>
                     </div>
                   )}
