@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, Send, CheckCircle, ZoomIn } from 'lucide-react'
+import { X, Heart, MessageCircle, ChevronRight, ChevronLeft, Package, Truck, ShoppingBag, Send, CheckCircle, ZoomIn } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 import { db } from '../firebase'
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'
@@ -498,7 +498,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                   }}
                   className="flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
                 >
-                  <Package className="w-4 h-4" />
+                  <ShoppingBag className="w-4 h-4" />
                   הזמנה
                 </button>
               )}
