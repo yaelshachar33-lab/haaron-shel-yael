@@ -177,6 +177,7 @@ function ZoomableImage({ src, alt }) {
 
 export default function ProductModal({ product, isSaved, onClose, onToggleSave, whatsappNumber }) {
   const [activeImg, setActiveImg] = useState(0)
+  const [showOrderPanel, setShowOrderPanel] = useState(false)
   const [showDeliveryForm, setShowDeliveryForm] = useState(false)
   const [formData, setFormData] = useState({ firstName: '', lastName: '', address: '', paymentRef: '' })
   const [sending, setSending] = useState(false)
@@ -190,12 +191,14 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
   const [pickupError, setPickupError] = useState(false)
   const pickupFormRef = useRef(null)
   const deliveryFormRef = useRef(null)
+  const orderPanelRef = useRef(null)
 
   const prev = useCallback(() => setActiveImg(i => Math.max(0, i - 1)), [])
   const next = useCallback(() => setActiveImg(i => Math.min(product.images.length - 1, i + 1)), [product.images.length])
 
   useEffect(() => {
     setActiveImg(0)
+    setShowOrderPanel(false)
     setShowDeliveryForm(false)
     setSent(false)
     setSendError(false)
@@ -483,167 +486,115 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                 צרי קשר ב-WhatsApp
               </a>
 
-              {/* Delivery order */}
+              {/* Single order button → panel */}
               {!product.sold && (
                 <button
                   onClick={() => {
-                    const opening = !showDeliveryForm
-                    setShowDeliveryForm(p => !p); setSent(false); setSendError(false)
-                    if (opening) setTimeout(() => deliveryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                    const opening = !showOrderPanel
+                    setShowOrderPanel(p => !p)
+                    setShowDeliveryForm(false); setSent(false); setSendError(false)
+                    setShowPickupForm(false); setPickupSent(false); setPickupError(false)
+                    if (opening) setTimeout(() => orderPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
                   }}
-                  className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
                 >
-                  <span className="flex items-center gap-2">
-                    <Truck className="w-4 h-4" />
-                    הזמנה עם משלוח
-                  </span>
-                  <span className="font-semibold text-charcoal">
-                    ₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}
-                  </span>
+                  <Package className="w-4 h-4" />
+                  הזמנה
                 </button>
               )}
 
-              {!product.sold && showDeliveryForm && !sent && (
-                <form ref={deliveryFormRef} onSubmit={handleDeliverySubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
-                  {/* Payment instructions */}
-                  <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
-                    <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
-                    <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">
-                      {whatsappNumber.replace('972', '0')}
-                    </p>
-                    <p className="text-xs text-warm-gray mt-1">
-                      סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (כולל משלוח)
-                    </p>
-                  </div>
-                  <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים לביצוע ההזמנה</p>
-                  <div className="flex gap-2">
-                    <input
-                      required
-                      placeholder="שם פרטי"
-                      value={formData.firstName}
-                      onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))}
-                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                      dir="rtl"
-                    />
-                    <input
-                      required
-                      placeholder="שם משפחה"
-                      value={formData.lastName}
-                      onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))}
-                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                      dir="rtl"
-                    />
-                  </div>
-                  <textarea
-                    required
-                    placeholder="כתובת מלאה (רחוב, מספר, עיר, מיקוד)"
-                    value={formData.address}
-                    onChange={e => setFormData(p => ({ ...p, address: e.target.value }))}
-                    rows={2}
-                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400 resize-none"
-                  />
-                  <input
-                    required
-                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות"
-                    value={formData.paymentRef}
-                    onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))}
-                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                  />
-                  {sendError && <p className="text-xs text-red-500 text-center">שגיאה: {sendError}</p>}
-                  <button
-                    type="submit"
-                    disabled={sending}
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60"
-                  >
-                    <Send className="w-4 h-4" />
-                    {sending ? 'שולחת...' : 'שלחי הזמנה'}
-                  </button>
-                </form>
-              )}
+              {!product.sold && showOrderPanel && (
+                <div ref={orderPanelRef} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
 
-              {sent && (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
-                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
-                  <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם</p>
-                </div>
-              )}
+                  {/* Option selectors */}
+                  {!showDeliveryForm && !showPickupForm && !sent && !pickupSent && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setShowDeliveryForm(true); setTimeout(() => deliveryFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
+                        className="flex-1 flex flex-col items-center gap-1 py-3 px-2 bg-white border border-cream-300 rounded-xl hover:border-taupe-400 transition-colors"
+                      >
+                        <Truck className="w-4 h-4 text-warm-gray" />
+                        <span className="text-xs font-medium text-charcoal">עם משלוח</span>
+                        <span className="text-sm font-bold text-charcoal">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span>
+                      </button>
+                      <button
+                        onClick={() => { setShowPickupForm(true); setTimeout(() => pickupFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
+                        className="flex-1 flex flex-col items-center gap-1 py-3 px-2 bg-white border border-cream-300 rounded-xl hover:border-taupe-400 transition-colors"
+                      >
+                        <Package className="w-4 h-4 text-warm-gray" />
+                        <span className="text-xs font-medium text-charcoal">איסוף עצמי</span>
+                        <span className="text-sm font-bold text-charcoal">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span>
+                      </button>
+                    </div>
+                  )}
 
-              {/* Pickup order */}
-              {!product.sold && (
-                <button
-                  onClick={() => {
-                    const opening = !showPickupForm
-                    setShowPickupForm(p => !p); setPickupSent(false); setPickupError(false)
-                    if (opening) setTimeout(() => pickupFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
-                  }}
-                  className="flex items-center justify-between w-full py-3.5 px-5 rounded-full border border-cream-300 text-warm-gray hover:border-taupe-400 hover:text-charcoal text-sm font-medium transition-all duration-200"
-                >
-                  <span className="flex items-center gap-2">
-                    <Package className="w-4 h-4" />
-                    הזמנה עם איסוף עצמי
-                  </span>
-                  <span className="font-semibold text-charcoal">
-                    ₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}
-                  </span>
-                </button>
-              )}
+                  {/* Delivery form */}
+                  {showDeliveryForm && !sent && (
+                    <form ref={deliveryFormRef} onSubmit={handleDeliverySubmit} className="space-y-3 animate-fade-in">
+                      <button type="button" onClick={() => setShowDeliveryForm(false)} className="text-xs text-warm-gray hover:text-charcoal flex items-center gap-1">
+                        ← חזרה לבחירה
+                      </button>
+                      <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
+                        <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
+                        <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">{whatsappNumber.replace('972', '0')}</p>
+                        <p className="text-xs text-warm-gray mt-1">סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.priceDelivery * (1 - product.discount / 100)) : product.priceDelivery}</span> (כולל משלוח)</p>
+                      </div>
+                      <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים לביצוע ההזמנה</p>
+                      <div className="flex gap-2">
+                        <input required placeholder="שם פרטי" value={formData.firstName} onChange={e => setFormData(p => ({ ...p, firstName: e.target.value }))} className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" dir="rtl" />
+                        <input required placeholder="שם משפחה" value={formData.lastName} onChange={e => setFormData(p => ({ ...p, lastName: e.target.value }))} className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" dir="rtl" />
+                      </div>
+                      <textarea required placeholder="כתובת מלאה (רחוב, מספר, עיר, מיקוד)" value={formData.address} onChange={e => setFormData(p => ({ ...p, address: e.target.value }))} rows={2} className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400 resize-none" />
+                      <input required placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות" value={formData.paymentRef} onChange={e => setFormData(p => ({ ...p, paymentRef: e.target.value }))} className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" />
+                      {sendError && <p className="text-xs text-red-500 text-center">שגיאה: {sendError}</p>}
+                      <button type="submit" disabled={sending} className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60">
+                        <Send className="w-4 h-4" />
+                        {sending ? 'שולחת...' : 'שלחי הזמנה'}
+                      </button>
+                    </form>
+                  )}
 
-              {showPickupForm && !pickupSent && (
-                <form ref={pickupFormRef} onSubmit={handlePickupSubmit} className="bg-cream-200 rounded-2xl p-4 space-y-3 animate-fade-in">
-                  {/* Payment instructions */}
-                  <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
-                    <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
-                    <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">
-                      {whatsappNumber.replace('972', '0')}
-                    </p>
-                    <p className="text-xs text-warm-gray mt-1">
-                      סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span> (איסוף עצמי)
-                    </p>
-                  </div>
-                  <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים ושלחי הזמנה. האיסוף יתואם ב-WhatsApp</p>
-                  <div className="flex gap-2">
-                    <input
-                      required
-                      placeholder="שם פרטי"
-                      value={pickupData.firstName}
-                      onChange={e => setPickupData(p => ({ ...p, firstName: e.target.value }))}
-                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                      dir="rtl"
-                    />
-                    <input
-                      required
-                      placeholder="שם משפחה"
-                      value={pickupData.lastName}
-                      onChange={e => setPickupData(p => ({ ...p, lastName: e.target.value }))}
-                      className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                      dir="rtl"
-                    />
-                  </div>
-                  <input
-                    required
-                    placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות"
-                    value={pickupData.paymentRef}
-                    onChange={e => setPickupData(p => ({ ...p, paymentRef: e.target.value }))}
-                    className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400"
-                  />
-                  {pickupError && <p className="text-xs text-red-500 text-center">שגיאה: {pickupError}</p>}
-                  <button
-                    type="submit"
-                    disabled={pickupSending}
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60"
-                  >
-                    <Send className="w-4 h-4" />
-                    {pickupSending ? 'שולחת...' : 'שלחי הזמנה'}
-                  </button>
-                </form>
-              )}
+                  {sent && (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center animate-fade-in">
+                      <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
+                      <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם</p>
+                    </div>
+                  )}
 
-              {pickupSent && (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-center animate-fade-in">
-                  <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
-                  <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם לתיאום</p>
+                  {/* Pickup form */}
+                  {showPickupForm && !pickupSent && (
+                    <form ref={pickupFormRef} onSubmit={handlePickupSubmit} className="space-y-3 animate-fade-in">
+                      <button type="button" onClick={() => setShowPickupForm(false)} className="text-xs text-warm-gray hover:text-charcoal flex items-center gap-1">
+                        ← חזרה לבחירה
+                      </button>
+                      <div className="bg-white rounded-xl p-3 text-center border border-cream-300">
+                        <p className="text-xs text-warm-gray mb-1">שלחי ביט / פייבוקס למספר</p>
+                        <p className="font-frank text-2xl font-semibold text-charcoal tracking-wider">{whatsappNumber.replace('972', '0')}</p>
+                        <p className="text-xs text-warm-gray mt-1">סכום לתשלום: <span className="font-bold text-charcoal text-sm">₪{product.discount > 0 ? Math.round(product.pricePickup * (1 - product.discount / 100)) : product.pricePickup}</span> (איסוף עצמי)</p>
+                      </div>
+                      <p className="text-xs text-warm-gray text-center">לאחר התשלום — מלאי את הפרטים ושלחי הזמנה. האיסוף יתואם ב-WhatsApp</p>
+                      <div className="flex gap-2">
+                        <input required placeholder="שם פרטי" value={pickupData.firstName} onChange={e => setPickupData(p => ({ ...p, firstName: e.target.value }))} className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" dir="rtl" />
+                        <input required placeholder="שם משפחה" value={pickupData.lastName} onChange={e => setPickupData(p => ({ ...p, lastName: e.target.value }))} className="flex-1 min-w-0 bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" dir="rtl" />
+                      </div>
+                      <input required placeholder="אסמכתא לתשלום – מספר אישור בן 13 ספרות" value={pickupData.paymentRef} onChange={e => setPickupData(p => ({ ...p, paymentRef: e.target.value }))} className="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm text-charcoal placeholder-warm-gray focus:outline-none focus:border-taupe-400" />
+                      {pickupError && <p className="text-xs text-red-500 text-center">שגיאה: {pickupError}</p>}
+                      <button type="submit" disabled={pickupSending} className="flex items-center justify-center gap-2 w-full py-3 rounded-full bg-charcoal text-cream-100 text-sm font-medium hover:bg-taupe-600 transition-colors disabled:opacity-60">
+                        <Send className="w-4 h-4" />
+                        {pickupSending ? 'שולחת...' : 'שלחי הזמנה'}
+                      </button>
+                    </form>
+                  )}
+
+                  {pickupSent && (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center animate-fade-in">
+                      <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-charcoal">ההזמנה נשלחה!</p>
+                      <p className="text-xs text-warm-gray mt-1">אחזור אליך בהקדם לתיאום</p>
+                    </div>
+                  )}
+
                 </div>
               )}
 
