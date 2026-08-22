@@ -336,7 +336,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
 
           {/* ── Left: images ── */}
           <div className="sm:w-[45%] shrink-0 bg-cream-200">
-            <div className="relative aspect-[3/4] overflow-hidden">
+            <div className="relative aspect-square sm:aspect-[3/4] overflow-hidden">
               <ZoomableImage src={product.images[activeImg]} alt={`${product.name} – תמונה ${activeImg + 1}`} />
 
               {((Date.now() - new Date(product.dateAdded).getTime()) / 86400000) <= 3 && (
