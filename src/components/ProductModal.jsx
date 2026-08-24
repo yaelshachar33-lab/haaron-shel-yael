@@ -318,7 +318,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         role="dialog"
         aria-modal="true"
         aria-label={product.name}
-        className="relative w-full sm:max-w-4xl bg-cream-100 rounded-t-3xl sm:rounded-3xl overflow-hidden animate-modal-in max-h-[95vh] flex flex-col"
+        className="relative w-full sm:max-w-4xl bg-cream-100 rounded-t-3xl sm:rounded-3xl overflow-hidden animate-modal-in h-[95vh] sm:h-auto sm:max-h-[95vh] flex flex-col"
       >
         {/* Drag handle (mobile) */}
         <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -338,7 +338,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
         <div className="flex flex-col sm:flex-row overflow-y-auto flex-1 min-h-0">
 
           {/* ── Left: images ── */}
-          <div className="sm:w-[45%] shrink-0 bg-cream-200">
+          <div className="sm:w-[45%] shrink-0 bg-cream-200 max-h-[40vh] sm:max-h-none overflow-hidden sm:overflow-visible">
             <div className="relative aspect-square sm:aspect-[3/4] overflow-hidden">
               <ZoomableImage src={product.images[activeImg]} alt={`${product.name} – תמונה ${activeImg + 1}`} />
 
@@ -401,7 +401,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
           </div>
 
           {/* ── Right: details ── */}
-          <div className="sm:w-[55%] p-4 sm:p-8 sm:overflow-y-auto">
+          <div className="sm:w-[55%] p-4 sm:p-8 overflow-y-auto">
             <p className="text-xs text-taupe-500 font-medium tracking-widest uppercase mb-1">{product.type}</p>
             <div className="flex items-start justify-between gap-2 mb-1">
               <h2 className="font-frank text-2xl sm:text-3xl font-light text-charcoal">
