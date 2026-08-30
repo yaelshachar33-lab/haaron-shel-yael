@@ -497,9 +497,9 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     if (opening) setTimeout(() => orderPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
                   }}
                   className="flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-full text-white text-sm font-medium transition-all duration-200"
-                  style={{ backgroundColor: '#B5714F' }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#9E6040'}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#B5714F'}
+                  style={{ backgroundColor: '#9A5A3A' }}
+                  onMouseEnter={e => e.currentTarget.style.backgroundColor = '#7F4A2D'}
+                  onMouseLeave={e => e.currentTarget.style.backgroundColor = '#9A5A3A'}
                 >
                   <ShoppingBag className="w-4 h-4" />
                   הזמנה

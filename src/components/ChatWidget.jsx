@@ -230,7 +230,7 @@ export default function ChatWidget({ onProductClick }) {
         <button
           onClick={() => setOpen(v => !v)}
           className="w-14 h-14 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-          style={{ backgroundColor: '#B5714F' }}
+          style={{ backgroundColor: '#9A5A3A' }}
           aria-label={open ? "סגרי צ'אט" : "פתחי צ'אט"}
         >
           {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
