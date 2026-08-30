@@ -229,7 +229,7 @@ export default function ChatWidget({ onProductClick }) {
       <div className="fixed bottom-6 right-6 z-[101]">
         <button
           onClick={() => setOpen(v => !v)}
-          className="w-14 h-14 bg-rose-900 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          className="w-14 h-14 bg-rose-700 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
           aria-label={open ? "סגרי צ'אט" : "פתחי צ'אט"}
         >
           {open ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}

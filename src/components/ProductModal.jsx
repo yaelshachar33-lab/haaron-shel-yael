@@ -496,7 +496,7 @@ export default function ProductModal({ product, isSaved, onClose, onToggleSave, 
                     setShowPickupForm(false); setPickupSent(false); setPickupError(false)
                     if (opening) setTimeout(() => orderPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
                   }}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-full bg-rose-900 text-white hover:bg-rose-800 text-sm font-medium transition-all duration-200"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-full bg-rose-700 text-white hover:bg-rose-600 text-sm font-medium transition-all duration-200"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   הזמנה
