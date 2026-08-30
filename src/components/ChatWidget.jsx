@@ -25,6 +25,8 @@ function buildSiteContext(products, content) {
 שם: הארון של יעל
 ליצירת קשר: דרך עמוד "צור קשר" באתר בלבד — אל תשתפי מספר טלפון בשיחה
 
+עלות משלוח: ₪20
+
 פריטים זמינים (${available.length} פריטים):
 ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
 
