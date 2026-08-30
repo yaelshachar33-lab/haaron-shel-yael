@@ -47,7 +47,7 @@ ${siteContext}
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
-        max_tokens: 400,
+        max_tokens: 700,
         system: systemPrompt,
         messages,
       }),
