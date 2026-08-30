@@ -10,7 +10,7 @@ function buildSiteContext(products, content) {
       ? `₪${Math.round(p.pricePickup * (1 - p.discount / 100))} (מקורי ₪${p.pricePickup}, הנחה ${p.discount}%)`
       : `₪${p.pricePickup}`
     return [
-      `פריט ${i + 1}: ${p.name}`,
+      `פריט ${i + 1} [ID:${p.id}]: ${p.name}`,
       `  קטגוריה: ${p.category || 'כללי'} | מידה: ${p.size} | מחיר: ${price}`,
       p.brand       ? `  מותג: ${p.brand}` : '',
       p.color       ? `  צבע: ${p.color}` : '',
@@ -35,15 +35,13 @@ ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
 }
 
 function parseProducts(text, products) {
-  const tags = [...text.matchAll(/\[PRODUCT:([^\]]+)\]/g)].map(m => m[1].trim())
-  const normalize = s => s.trim().replace(/\s+/g, ' ')
-  const found = tags.map(name =>
-    products.find(p => normalize(p.name) === normalize(name) && !p.sold)
+  const tags = [...text.matchAll(/\[PRODUCT_ID:([^\]]+)\]/g)].map(m => m[1].trim())
+  const found = tags.map(id =>
+    products.find(p => String(p.id) === String(id) && !p.sold)
   ).filter(Boolean)
-  // deduplicate
   const seen = new Set()
   const unique = found.filter(p => seen.has(p.id) ? false : seen.add(p.id))
-  const cleanText = text.replace(/\[PRODUCT:[^\]]+\]/g, '').trim()
+  const cleanText = text.replace(/\[PRODUCT_ID:[^\]]+\]/g, '').trim()
   return { cleanText, foundProducts: unique }
 }
 
