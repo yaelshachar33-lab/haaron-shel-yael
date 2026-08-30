@@ -36,11 +36,15 @@ ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
 
 function parseProducts(text, products) {
   const tags = [...text.matchAll(/\[PRODUCT:([^\]]+)\]/g)].map(m => m[1].trim())
+  const normalize = s => s.trim().replace(/\s+/g, ' ')
   const found = tags.map(name =>
-    products.find(p => p.name.trim() === name && !p.sold)
+    products.find(p => normalize(p.name) === normalize(name) && !p.sold)
   ).filter(Boolean)
+  // deduplicate
+  const seen = new Set()
+  const unique = found.filter(p => seen.has(p.id) ? false : seen.add(p.id))
   const cleanText = text.replace(/\[PRODUCT:[^\]]+\]/g, '').trim()
-  return { cleanText, foundProducts: found }
+  return { cleanText, foundProducts: unique }
 }
 
 function ProductCard({ product, onProductClick }) {
