@@ -93,7 +93,7 @@ export default function MainSite() {
         />
       </main>
       <Footer />
-      <ChatWidget />
+      <ChatWidget onProductClick={setSelectedProduct} />
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}

@@ -34,7 +34,40 @@ ${productLines.join('\n') || 'אין פריטים זמינים כרגע'}
 תשלום: ${getTermText('תשלום ומשלוח')}`
 }
 
-export default function ChatWidget() {
+function parseProducts(text, products) {
+  const tags = [...text.matchAll(/\[PRODUCT:([^\]]+)\]/g)].map(m => m[1].trim())
+  const found = tags.map(name =>
+    products.find(p => p.name.trim() === name && !p.sold)
+  ).filter(Boolean)
+  const cleanText = text.replace(/\[PRODUCT:[^\]]+\]/g, '').trim()
+  return { cleanText, foundProducts: found }
+}
+
+function ProductCard({ product, onProductClick }) {
+  const price = product.discount > 0
+    ? Math.round(product.pricePickup * (1 - product.discount / 100))
+    : product.pricePickup
+  return (
+    <button
+      onClick={() => onProductClick?.(product)}
+      className="flex items-center gap-2 bg-cream-100 border border-cream-300 rounded-xl p-2 w-full text-right hover:border-taupe-400 transition-colors mt-2"
+    >
+      <img
+        src={product.images?.[0]}
+        alt={product.name}
+        className="w-14 h-14 rounded-lg object-cover shrink-0"
+      />
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium text-charcoal truncate">{product.name}</p>
+        {product.brand && <p className="text-[10px] text-warm-gray truncate">{product.brand}</p>}
+        <p className="text-xs font-bold text-charcoal mt-0.5">₪{price}</p>
+      </div>
+      <span className="text-[10px] text-taupe-500 shrink-0">לפרטים ›</span>
+    </button>
+  )
+}
+
+export default function ChatWidget({ onProductClick }) {
   const INITIAL_MSG = { role: 'assistant', content: 'היי! אני כאן לעזור 😊 יש שאלות על הפריטים, המשלוחים או כל דבר אחר?' }
 
   const [open, setOpen] = useState(false)
@@ -112,19 +145,30 @@ export default function ChatWidget() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2 text-sm">
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-            <div
-              className={`max-w-[82%] px-3 py-2 rounded-2xl leading-relaxed text-right ${
-                m.role === 'user'
-                  ? 'bg-cream-200 text-charcoal rounded-tr-sm'
-                  : 'bg-charcoal text-cream-100 rounded-tl-sm'
-              }`}
-            >
-              {m.content}
+        {messages.map((m, i) => {
+          if (m.role === 'assistant') {
+            const { cleanText, foundProducts } = parseProducts(m.content, products)
+            return (
+              <div key={i} className="flex justify-end">
+                <div className="max-w-[82%] w-full">
+                  <div className="px-3 py-2 rounded-2xl rounded-tl-sm leading-relaxed text-right bg-charcoal text-cream-100">
+                    {cleanText}
+                  </div>
+                  {foundProducts.map(p => (
+                    <ProductCard key={p.id} product={p} onProductClick={onProductClick} />
+                  ))}
+                </div>
+              </div>
+            )
+          }
+          return (
+            <div key={i} className="flex justify-start">
+              <div className="max-w-[82%] px-3 py-2 rounded-2xl rounded-tr-sm leading-relaxed text-right bg-cream-200 text-charcoal">
+                {m.content}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
         {loading && (
           <div className="flex justify-end">
             <div className="bg-charcoal text-cream-100 px-3 py-2 rounded-2xl rounded-tl-sm text-xs opacity-60 flex gap-1 items-center">
